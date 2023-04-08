@@ -31,7 +31,7 @@ class HomeScreen extends ConsumerWidget {
     var one_minutes = 60000;
 
     location
-      ..changeSettings(interval: one_minutes)
+      ..changeSettings(interval: one_minutes * 5)
       ..enableBackgroundMode();
     //-----------------------------//
 
