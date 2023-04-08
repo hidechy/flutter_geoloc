@@ -28,8 +28,10 @@ class HomeScreen extends ConsumerWidget {
     //-----------------------------//
     requestPermission();
 
+    var one_minutes = 60000;
+
     location
-      ..changeSettings(interval: 300)
+      ..changeSettings(interval: one_minutes)
       ..enableBackgroundMode();
     //-----------------------------//
 
