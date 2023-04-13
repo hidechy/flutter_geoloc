@@ -28,10 +28,10 @@ class HomeScreen extends ConsumerWidget {
     //-----------------------------//
     requestPermission();
 
-    var one_minutes = 60000;
+    const oneMinutes = 60000;
 
     location
-      ..changeSettings(interval: one_minutes * 5)
+      ..changeSettings(interval: oneMinutes * 5)
       ..enableBackgroundMode();
     //-----------------------------//
 
@@ -104,7 +104,7 @@ class HomeScreen extends ConsumerWidget {
   ///
   Future<void> insertGeoloc({required loc.LocationData location}) async {
     final now = DateTime.now();
-    final timeFormat = DateFormat('HH:mm');
+    final timeFormat = DateFormat('HH:mm:ss');
     final currentTime = timeFormat.format(now);
 
     await _ref.watch(insertGeolocProvider.notifier).insertGeoloc(
