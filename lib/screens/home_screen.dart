@@ -7,9 +7,12 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:location/location.dart' as loc;
 import 'package:permission_handler/permission_handler.dart';
+import 'package:table_calendar/table_calendar.dart';
 
 import '../state/geoloc/geoloc_notifier.dart';
 import '../state/geoloc/geoloc_state.dart';
+import 'alert/geoloc_dialog.dart';
+import 'alert/geoloc_display_alert.dart';
 
 class HomeScreen extends ConsumerWidget {
   HomeScreen({super.key});
@@ -18,11 +21,13 @@ class HomeScreen extends ConsumerWidget {
 
   StreamSubscription<loc.LocationData>? locationSubscription;
 
+  late BuildContext _context;
   late WidgetRef _ref;
 
   ///
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    _context = context;
     _ref = ref;
 
     //-----------------------------//
@@ -35,34 +40,94 @@ class HomeScreen extends ConsumerWidget {
       ..enableBackgroundMode();
     //-----------------------------//
 
+    final focusDayState = ref.watch(focusDayProvider);
+
     return Scaffold(
-      body: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
-        child: Column(
-          children: [
-            const SizedBox(height: 80),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                GestureDetector(
-                  onTap: getLocation,
-                  child: const Icon(Icons.maps_ugc_sharp),
+      body: SafeArea(
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: Column(
+            children: [
+              ///////////// calendar
+              TableCalendar(
+//                    eventLoader: getEventForDay,
+
+                ///
+                calendarStyle: const CalendarStyle(
+                  todayDecoration: BoxDecoration(color: Colors.transparent),
+                  selectedDecoration: BoxDecoration(
+                    color: Colors.indigo,
+                    shape: BoxShape.circle,
+                  ),
+
+                  ///
+                  todayTextStyle: TextStyle(color: Color(0xFFFAFAFA)),
+                  selectedTextStyle: TextStyle(color: Color(0xFFFAFAFA)),
+                  rangeStartTextStyle: TextStyle(color: Color(0xFFFAFAFA)),
+                  rangeEndTextStyle: TextStyle(color: Color(0xFFFAFAFA)),
+                  disabledTextStyle: TextStyle(color: Colors.grey),
+                  weekendTextStyle: TextStyle(color: Colors.white),
+
+                  ///
+                  markerDecoration: BoxDecoration(color: Colors.white),
+                  rangeStartDecoration: BoxDecoration(color: Color(0xFF6699FF)),
+                  rangeEndDecoration: BoxDecoration(color: Color(0xFF6699FF)),
+                  holidayDecoration: BoxDecoration(
+                    border: Border.fromBorderSide(
+                      BorderSide(
+                        color: Color(0xFF9FA8DA),
+                      ),
+                    ),
+                  ),
                 ),
-                GestureDetector(
-                  onTap: listenLocation,
-                  child: const Icon(Icons.play_arrow),
-                ),
-                GestureDetector(
-                  onTap: _stopListening,
-                  child: const Icon(Icons.stop),
-                ),
-              ],
-            ),
-            Divider(
-              color: Colors.white.withOpacity(0.6),
-              thickness: 2,
-            ),
-          ],
+
+                ///
+                headerStyle: const HeaderStyle(formatButtonVisible: false),
+                firstDay: DateTime.utc(2020),
+                lastDay: DateTime.utc(2030, 12, 31),
+
+                focusedDay: focusDayState,
+
+                ///
+                selectedDayPredicate: (day) {
+                  return isSameDay(ref.watch(blueBallProvider), day);
+                },
+
+                ///
+                onDaySelected: (selectedDay, focusedDay) {
+                  onDayPressed(date: selectedDay);
+                },
+              ),
+              ///////////// calendar
+
+              Divider(
+                color: Colors.white.withOpacity(0.6),
+                thickness: 2,
+              ),
+
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  GestureDetector(
+                    onTap: getLocation,
+                    child: const Icon(Icons.maps_ugc_sharp),
+                  ),
+                  GestureDetector(
+                    onTap: listenLocation,
+                    child: const Icon(Icons.play_arrow),
+                  ),
+                  GestureDetector(
+                    onTap: _stopListening,
+                    child: const Icon(Icons.stop),
+                  ),
+                ],
+              ),
+              Divider(
+                color: Colors.white.withOpacity(0.6),
+                thickness: 2,
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -120,5 +185,43 @@ class HomeScreen extends ConsumerWidget {
   ///
   Future<void> _stopListening() async {
     await locationSubscription?.cancel();
+  }
+
+  ///
+  void onDayPressed({required DateTime date}) {
+    GeolocDialog(
+      context: _context,
+      widget: GeolocDisplayAlert(date: date),
+    );
+  }
+}
+
+////////////////////////////////////////////////////////////
+final focusDayProvider =
+    StateNotifierProvider.autoDispose<FocusDayStateNotifier, DateTime>((ref) {
+  return FocusDayStateNotifier();
+});
+
+class FocusDayStateNotifier extends StateNotifier<DateTime> {
+  FocusDayStateNotifier() : super(DateTime.now());
+
+  ///
+  Future<void> setDateTime({required DateTime dateTime}) async {
+    state = dateTime;
+  }
+}
+
+////////////////////////////////////////////////////////////
+final blueBallProvider =
+    StateNotifierProvider.autoDispose<BlueBallStateNotifier, DateTime>((ref) {
+  return BlueBallStateNotifier();
+});
+
+class BlueBallStateNotifier extends StateNotifier<DateTime> {
+  BlueBallStateNotifier() : super(DateTime.now());
+
+  ///
+  Future<void> setDateTime({required DateTime dateTime}) async {
+    state = dateTime;
   }
 }
