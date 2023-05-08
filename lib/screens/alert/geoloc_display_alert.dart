@@ -4,12 +4,17 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../extensions/extensions.dart';
+import '../../models/geoloc.dart';
 import '../../view_model/geoloc_viewmodel.dart';
+import 'geoloc_dialog.dart';
+import 'geoloc_map_alert.dart';
 
 class GeolocDisplayAlert extends ConsumerWidget {
   GeolocDisplayAlert({super.key, required this.date});
 
   final DateTime date;
+
+  List<Geoloc> geolocList = [];
 
   late WidgetRef _ref;
 
@@ -33,8 +38,22 @@ class GeolocDisplayAlert extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(width: context.screenSize.width),
-              SizedBox(height: 20),
-              Text(date.yyyymmdd),
+              const SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(date.yyyymmdd),
+                  GestureDetector(
+                    onTap: () {
+                      GeolocDialog(
+                        context: context,
+                        widget: GeolocMapAlert(geolocList: geolocList),
+                      );
+                    },
+                    child: const Icon(Icons.map),
+                  ),
+                ],
+              ),
               Divider(
                 color: Colors.white.withOpacity(0.5),
                 thickness: 2,
@@ -53,6 +72,8 @@ class GeolocDisplayAlert extends ConsumerWidget {
 
     final geolocState = _ref.watch(geolocProvider(date));
 
+    geolocList = geolocState;
+
     geolocState.forEach((element) {
       list.add(
         Container(
@@ -66,7 +87,7 @@ class GeolocDisplayAlert extends ConsumerWidget {
             ),
           ),
           child: DefaultTextStyle(
-            style: TextStyle(fontSize: 12),
+            style: const TextStyle(fontSize: 12),
             child: Row(
               children: [
                 Expanded(child: Text(element.time)),
