@@ -1,9 +1,10 @@
-// ignore_for_file: depend_on_referenced_packages, must_be_immutable
+// ignore_for_file: depend_on_referenced_packages, must_be_immutable, avoid_bool_literals_in_conditional_expressions
 
 import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:geoloc/state/map_hide/map_hide_notifier.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:latlong2/latlong.dart';
 
@@ -30,9 +31,12 @@ class GeolocMapAlert extends ConsumerWidget {
 
     makeMarker();
 
+    final mapHideState = ref.watch(mapHideProvider);
+
     return Scaffold(
       body: SafeArea(
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             //---------------------------------------------
             Expanded(
@@ -50,15 +54,30 @@ class GeolocMapAlert extends ConsumerWidget {
                   ),
                 ),
                 children: [
-                  TileLayer(
-                    urlTemplate:
-                        'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                  ),
+                  if (mapHideState.mapHide)
+                    TileLayer(
+                      urlTemplate:
+                          'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                    ),
                   MarkerLayer(markers: markerList),
                 ],
               ),
             ),
             //---------------------------------------------
+
+            IconButton(
+              onPressed: () {
+                ref.watch(mapHideProvider.notifier).setMapHide(
+                      value: (mapHideState.mapHide) ? false : true,
+                    );
+              },
+              icon: Icon(
+                Icons.ac_unit,
+                color: (mapHideState.mapHide)
+                    ? Colors.yellowAccent.withOpacity(0.6)
+                    : Colors.white.withOpacity(0.6),
+              ),
+            ),
           ],
         ),
       ),
