@@ -3,6 +3,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:geoloc/extensions/extensions.dart';
+import 'package:geoloc/utility/utility.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:location/location.dart' as loc;
@@ -20,6 +22,8 @@ class HomeScreen extends ConsumerWidget {
   final loc.Location location = loc.Location();
 
   StreamSubscription<loc.LocationData>? locationSubscription;
+
+  final Utility _utility = Utility();
 
   late BuildContext _context;
   late WidgetRef _ref;
@@ -44,90 +48,102 @@ class HomeScreen extends ConsumerWidget {
 
     return Scaffold(
       body: SafeArea(
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: Column(
-            children: [
-              ///////////// calendar
-              TableCalendar(
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            _utility.getBackGround(),
+            Column(
+              children: [
+                ///////////// calendar
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: TableCalendar(
 //                    eventLoader: getEventForDay,
 
-                ///
-                calendarStyle: const CalendarStyle(
-                  todayDecoration: BoxDecoration(color: Colors.transparent),
-                  selectedDecoration: BoxDecoration(
-                    color: Colors.indigo,
-                    shape: BoxShape.circle,
-                  ),
+                    ///
+                    calendarStyle: const CalendarStyle(
+                      todayDecoration: BoxDecoration(color: Colors.transparent),
+                      selectedDecoration: BoxDecoration(
+                        color: Colors.indigo,
+                        shape: BoxShape.circle,
+                      ),
 
-                  ///
-                  todayTextStyle: TextStyle(color: Color(0xFFFAFAFA)),
-                  selectedTextStyle: TextStyle(color: Color(0xFFFAFAFA)),
-                  rangeStartTextStyle: TextStyle(color: Color(0xFFFAFAFA)),
-                  rangeEndTextStyle: TextStyle(color: Color(0xFFFAFAFA)),
-                  disabledTextStyle: TextStyle(color: Colors.grey),
-                  weekendTextStyle: TextStyle(color: Colors.white),
+                      ///
+                      todayTextStyle: TextStyle(color: Color(0xFFFAFAFA)),
+                      selectedTextStyle: TextStyle(color: Color(0xFFFAFAFA)),
+                      rangeStartTextStyle: TextStyle(color: Color(0xFFFAFAFA)),
+                      rangeEndTextStyle: TextStyle(color: Color(0xFFFAFAFA)),
+                      disabledTextStyle: TextStyle(color: Colors.grey),
+                      weekendTextStyle: TextStyle(color: Colors.white),
 
-                  ///
-                  markerDecoration: BoxDecoration(color: Colors.white),
-                  rangeStartDecoration: BoxDecoration(color: Color(0xFF6699FF)),
-                  rangeEndDecoration: BoxDecoration(color: Color(0xFF6699FF)),
-                  holidayDecoration: BoxDecoration(
-                    border: Border.fromBorderSide(
-                      BorderSide(
-                        color: Color(0xFF9FA8DA),
+                      ///
+                      markerDecoration: BoxDecoration(color: Colors.white),
+                      rangeStartDecoration: BoxDecoration(color: Color(0xFF6699FF)),
+                      rangeEndDecoration: BoxDecoration(color: Color(0xFF6699FF)),
+                      holidayDecoration: BoxDecoration(
+                        border: Border.fromBorderSide(
+                          BorderSide(
+                            color: Color(0xFF9FA8DA),
+                          ),
+                        ),
                       ),
                     ),
+
+                    ///
+                    headerStyle: const HeaderStyle(formatButtonVisible: false),
+                    firstDay: DateTime.utc(2020),
+                    lastDay: DateTime.utc(2030, 12, 31),
+
+                    focusedDay: focusDayState,
+
+                    ///
+                    selectedDayPredicate: (day) {
+                      return isSameDay(ref.watch(blueBallProvider), day);
+                    },
+
+                    ///
+                    onDaySelected: (selectedDay, focusedDay) {
+                      onDayPressed(date: selectedDay);
+                    },
                   ),
                 ),
-
-                ///
-                headerStyle: const HeaderStyle(formatButtonVisible: false),
-                firstDay: DateTime.utc(2020),
-                lastDay: DateTime.utc(2030, 12, 31),
-
-                focusedDay: focusDayState,
-
-                ///
-                selectedDayPredicate: (day) {
-                  return isSameDay(ref.watch(blueBallProvider), day);
-                },
-
-                ///
-                onDaySelected: (selectedDay, focusedDay) {
-                  onDayPressed(date: selectedDay);
-                },
-              ),
-              ///////////// calendar
-
-              Divider(
-                color: Colors.white.withOpacity(0.6),
-                thickness: 2,
-              ),
-
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                ///////////// calendar
+              ],
+            ),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Column(
                 children: [
-                  GestureDetector(
-                    onTap: getLocation,
-                    child: const Icon(Icons.maps_ugc_sharp),
+                  SizedBox(height: context.screenSize.height * 0.55),
+                  Divider(
+                    color: Colors.white.withOpacity(0.6),
+                    thickness: 2,
                   ),
-                  GestureDetector(
-                    onTap: listenLocation,
-                    child: const Icon(Icons.play_arrow),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      GestureDetector(
+                        onTap: getLocation,
+                        child: const Icon(Icons.maps_ugc_sharp),
+                      ),
+                      GestureDetector(
+                        onTap: listenLocation,
+                        child: const Icon(Icons.play_arrow),
+                      ),
+                      GestureDetector(
+                        onTap: _stopListening,
+                        child: const Icon(Icons.stop),
+                      ),
+                    ],
                   ),
-                  GestureDetector(
-                    onTap: _stopListening,
-                    child: const Icon(Icons.stop),
+                  Divider(
+                    color: Colors.white.withOpacity(0.6),
+                    thickness: 2,
                   ),
                 ],
               ),
-              Divider(
-                color: Colors.white.withOpacity(0.6),
-                thickness: 2,
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -197,8 +213,7 @@ class HomeScreen extends ConsumerWidget {
 }
 
 ////////////////////////////////////////////////////////////
-final focusDayProvider =
-    StateNotifierProvider.autoDispose<FocusDayStateNotifier, DateTime>((ref) {
+final focusDayProvider = StateNotifierProvider.autoDispose<FocusDayStateNotifier, DateTime>((ref) {
   return FocusDayStateNotifier();
 });
 
@@ -212,8 +227,7 @@ class FocusDayStateNotifier extends StateNotifier<DateTime> {
 }
 
 ////////////////////////////////////////////////////////////
-final blueBallProvider =
-    StateNotifierProvider.autoDispose<BlueBallStateNotifier, DateTime>((ref) {
+final blueBallProvider = StateNotifierProvider.autoDispose<BlueBallStateNotifier, DateTime>((ref) {
   return BlueBallStateNotifier();
 });
 
