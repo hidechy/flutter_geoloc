@@ -9,8 +9,7 @@ import '../models/geoloc.dart';
 import '../utility/utility.dart';
 
 ////////////////////////////////////////////////
-final geolocProvider = StateNotifierProvider.autoDispose
-    .family<GeolocNotifier, List<Geoloc>, DateTime>((ref, date) {
+final geolocProvider = StateNotifierProvider.autoDispose.family<GeolocNotifier, List<Geoloc>, DateTime>((ref, date) {
   final client = ref.read(httpClientProvider);
 
   final utility = Utility();

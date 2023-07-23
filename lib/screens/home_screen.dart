@@ -1,9 +1,10 @@
-// ignore_for_file: must_be_immutable, avoid_catches_without_on_clauses
+// ignore_for_file: must_be_immutable, avoid_catches_without_on_clauses, use_build_context_synchronously
 
 import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:geoloc/extensions/extensions.dart';
+import 'package:geoloc/screens/alert/period_map_alert.dart';
 import 'package:geoloc/utility/utility.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -13,6 +14,8 @@ import 'package:table_calendar/table_calendar.dart';
 
 import '../state/geoloc/geoloc_notifier.dart';
 import '../state/geoloc/geoloc_state.dart';
+import '../state/period_lat_lng/period_lat_lng_notifier.dart';
+import '../state/period_lat_lng/period_lat_lng_request_state.dart';
 import 'alert/geoloc_dialog.dart';
 import 'alert/geoloc_display_alert.dart';
 
@@ -105,6 +108,11 @@ class HomeScreen extends ConsumerWidget {
                     onDaySelected: (selectedDay, focusedDay) {
                       onDayPressed(date: selectedDay);
                     },
+
+                    ///
+                    onPageChanged: (focusedDay) {
+                      onPageMoved(date: focusedDay);
+                    },
                   ),
                 ),
                 ///////////// calendar
@@ -139,6 +147,25 @@ class HomeScreen extends ConsumerWidget {
                   Divider(
                     color: Colors.white.withOpacity(0.6),
                     thickness: 2,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      IconButton(
+                        onPressed: () async {
+                          await _ref.watch(geolocPeriodProvider.notifier).getPeriodGeoloc(
+                                param: PeriodLatLngRequestState(flag: 'month', date: focusDayState),
+                              );
+
+                          await GeolocDialog(
+                            context: context,
+                            widget: PeriodMapAlert(date: focusDayState),
+                          );
+                        },
+                        icon: const Icon(Icons.map),
+                      ),
+                      Container(),
+                    ],
                   ),
                 ],
               ),
@@ -209,6 +236,11 @@ class HomeScreen extends ConsumerWidget {
       context: _context,
       widget: GeolocDisplayAlert(date: date),
     );
+  }
+
+  ///
+  void onPageMoved({required DateTime date}) {
+    _ref.watch(focusDayProvider.notifier).setDateTime(dateTime: date);
   }
 }
 

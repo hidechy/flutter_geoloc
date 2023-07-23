@@ -1,6 +1,7 @@
 enum APIPath {
   insertGeoloc,
   getGeoloc,
+  getAllGeoloc,
 }
 
 extension APIPathExtension on APIPath {
@@ -10,6 +11,8 @@ extension APIPathExtension on APIPath {
         return 'insertGeoloc';
       case APIPath.getGeoloc:
         return 'getGeoloc';
+      case APIPath.getAllGeoloc:
+        return 'getAllGeoloc';
     }
   }
 }
