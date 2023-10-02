@@ -1,36 +1,50 @@
 // ignore_for_file: must_be_immutable, depend_on_referenced_packages, use_build_context_synchronously
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
-import 'package:flutter_map/flutter_map.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:latlong2/latlong.dart';
 
 import '../../extensions/extensions.dart';
 import '../../models/geoloc.dart';
 import '../../state/map_pinpoint/map_pinpoint_notifier.dart';
-import 'geoloc_dialog.dart';
 
 class GeolocPinpointMapAlert extends ConsumerWidget {
   GeolocPinpointMapAlert({super.key, required this.geolocList});
 
   final List<Geoloc> geolocList;
 
-  List<Marker> markerList = [];
+  late CameraPosition initialCameraPosition;
 
-  late BuildContext _context;
+  final Completer<GoogleMapController> mapController = Completer<GoogleMapController>();
+
+  late Set<Marker> markers;
+
   late WidgetRef _ref;
 
   ///
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    _context = context;
     _ref = ref;
+
+    setMapParam();
 
     final mapPinpointState = ref.watch(mapPinpointProvider);
 
-    _makeMarker(lat: mapPinpointState.pinpointLat, lng: mapPinpointState.pinpointLng);
+    //==============================
+    markers = {
+      Marker(
+        markerId: MarkerId(mapPinpointState.pinpointTime),
+        position: LatLng(mapPinpointState.pinpointLat, mapPinpointState.pinpointLng),
+        infoWindow: InfoWindow(title: mapPinpointState.pinpointDate, snippet: mapPinpointState.pinpointTime),
+        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRose),
+      )
+    };
+    //==============================
 
     return Scaffold(
+      backgroundColor: Colors.transparent,
       body: SafeArea(
         child: Row(
           children: [
@@ -58,22 +72,11 @@ class GeolocPinpointMapAlert extends ConsumerWidget {
                 ),
                 const SizedBox(height: 20),
                 Expanded(
-                  /////////////////////////////// FlutterMap
-
-                  child: FlutterMap(
-                    options: MapOptions(
-                      center: LatLng(mapPinpointState.pinpointLat, mapPinpointState.pinpointLng),
-                      zoom: 15,
-                      maxZoom: 17,
-                      minZoom: 3,
-                    ),
-                    children: [
-                      TileLayer(urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png'),
-                      MarkerLayer(markers: markerList),
-                    ],
+                  child: GoogleMap(
+                    onMapCreated: mapController.complete,
+                    initialCameraPosition: initialCameraPosition,
+                    markers: markers,
                   ),
-
-                  /////////////////////////////// FlutterMap
                 ),
               ],
             )),
@@ -112,10 +115,7 @@ class GeolocPinpointMapAlert extends ConsumerWidget {
                         lng: element.longitude.toDouble(),
                       );
 
-                  await GeolocDialog(
-                    context: _context,
-                    widget: GeolocPinpointMapAlert(geolocList: geolocList),
-                  );
+                  await listNameTap(geoloc: element);
                 },
                 child: CircleAvatar(
                   backgroundColor: (pinpointTime == element.time) ? Colors.orangeAccent.withOpacity(0.6) : Colors.black,
@@ -133,18 +133,18 @@ class GeolocPinpointMapAlert extends ConsumerWidget {
   }
 
   ///
-  void _makeMarker({required double lat, required double lng}) {
-    markerList = [];
+  void setMapParam() {
+    final latLng = LatLng(geolocList[0].latitude.toDouble(), geolocList[0].longitude.toDouble());
+    initialCameraPosition = CameraPosition(target: latLng, zoom: 15, tilt: 50);
+  }
 
-    markerList.add(
-      Marker(
-        point: LatLng(lat, lng),
-        builder: (context) {
-          return DecoratedBox(
-            decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.orangeAccent.withOpacity(0.6)),
-            child: const Text('*'),
-          );
-        },
+  ///
+  Future<void> listNameTap({required Geoloc geoloc}) async {
+    final googleMap = await mapController.future;
+
+    await googleMap.animateCamera(
+      CameraUpdate.newCameraPosition(
+        CameraPosition(target: LatLng(geoloc.latitude.toDouble(), geoloc.longitude.toDouble()), zoom: 15),
       ),
     );
   }

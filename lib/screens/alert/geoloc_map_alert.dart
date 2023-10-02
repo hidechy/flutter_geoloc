@@ -11,6 +11,7 @@ import '../../extensions/extensions.dart';
 import '../../models/geoloc.dart';
 import '../../state/map_hide/map_hide_notifier.dart';
 import '../../state/map_pinpoint/map_pinpoint_notifier.dart';
+import '../../utility/utility.dart';
 import 'geoloc_dialog.dart';
 import 'geoloc_pinpoint_map_alert.dart';
 
@@ -29,6 +30,8 @@ class GeolocMapAlert extends ConsumerWidget {
 
   List<Geoloc> uniqueTimeGeolocList = [];
 
+  Utility utility = Utility();
+
   ///
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -41,6 +44,7 @@ class GeolocMapAlert extends ConsumerWidget {
     final mapHideState = ref.watch(mapHideProvider);
 
     return Scaffold(
+      backgroundColor: Colors.transparent,
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -144,13 +148,19 @@ class GeolocMapAlert extends ConsumerWidget {
   void makeUniqueTimeGeolocList() {
     uniqueTimeGeolocList = [];
 
+    List<Geoloc> list = [];
+
     final dtList = <String>[];
     geolocList.forEach((element) {
       if (!dtList.contains(element.time)) {
-        uniqueTimeGeolocList.add(element);
+        list.add(element);
       }
 
       dtList.add(element.time);
     });
+
+    list.sort((a, b) => a.time.compareTo(b.time));
+
+    uniqueTimeGeolocList = list;
   }
 }
