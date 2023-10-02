@@ -1,15 +1,18 @@
-// ignore_for_file: depend_on_referenced_packages, must_be_immutable, avoid_bool_literals_in_conditional_expressions
+// ignore_for_file: depend_on_referenced_packages, must_be_immutable, avoid_bool_literals_in_conditional_expressions, use_build_context_synchronously
 
 import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
-import 'package:geoloc/state/map_hide/map_hide_notifier.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:latlong2/latlong.dart';
 
 import '../../extensions/extensions.dart';
 import '../../models/geoloc.dart';
+import '../../state/map_hide/map_hide_notifier.dart';
+import '../../state/map_pinpoint/map_pinpoint_notifier.dart';
+import 'geoloc_dialog.dart';
+import 'geoloc_pinpoint_map_alert.dart';
 
 class GeolocMapAlert extends ConsumerWidget {
   GeolocMapAlert({super.key, required this.geolocList});
@@ -24,12 +27,16 @@ class GeolocMapAlert extends ConsumerWidget {
 
   List<Marker> markerList = [];
 
+  List<Geoloc> uniqueTimeGeolocList = [];
+
   ///
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     makeBounds();
 
     makeMarker();
+
+    makeUniqueTimeGeolocList();
 
     final mapHideState = ref.watch(mapHideProvider);
 
@@ -43,40 +50,47 @@ class GeolocMapAlert extends ConsumerWidget {
               child: FlutterMap(
                 options: MapOptions(
                   bounds: LatLngBounds(
-                    LatLng(
-                      boundsLatLngMap['minLat']! - boundsInner,
-                      boundsLatLngMap['minLng']! - boundsInner,
-                    ),
-                    LatLng(
-                      boundsLatLngMap['maxLat']! + boundsInner,
-                      boundsLatLngMap['maxLng']! + boundsInner,
-                    ),
+                    LatLng(boundsLatLngMap['minLat']! - boundsInner, boundsLatLngMap['minLng']! - boundsInner),
+                    LatLng(boundsLatLngMap['maxLat']! + boundsInner, boundsLatLngMap['maxLng']! + boundsInner),
                   ),
                 ),
                 children: [
-                  if (mapHideState.mapHide)
-                    TileLayer(
-                      urlTemplate:
-                          'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                    ),
+                  if (mapHideState.mapHide) TileLayer(urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png'),
                   MarkerLayer(markers: markerList),
                 ],
               ),
             ),
             //---------------------------------------------
 
-            IconButton(
-              onPressed: () {
-                ref.watch(mapHideProvider.notifier).setMapHide(
-                      value: (mapHideState.mapHide) ? false : true,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                IconButton(
+                  onPressed: () =>
+                      ref.watch(mapHideProvider.notifier).setMapHide(value: (mapHideState.mapHide) ? false : true),
+                  icon: Icon(
+                    Icons.ac_unit,
+                    color:
+                        (mapHideState.mapHide) ? Colors.yellowAccent.withOpacity(0.6) : Colors.white.withOpacity(0.6),
+                  ),
+                ),
+                IconButton(
+                  onPressed: () async {
+                    await ref.watch(mapPinpointProvider.notifier).setPinpointLatLng(
+                          date: uniqueTimeGeolocList[0].date.yyyymmdd,
+                          time: uniqueTimeGeolocList[0].time,
+                          lat: uniqueTimeGeolocList[0].latitude.toDouble(),
+                          lng: uniqueTimeGeolocList[0].longitude.toDouble(),
+                        );
+
+                    await GeolocDialog(
+                      context: context,
+                      widget: GeolocPinpointMapAlert(geolocList: uniqueTimeGeolocList),
                     );
-              },
-              icon: Icon(
-                Icons.ac_unit,
-                color: (mapHideState.mapHide)
-                    ? Colors.yellowAccent.withOpacity(0.6)
-                    : Colors.white.withOpacity(0.6),
-              ),
+                  },
+                  icon: const Icon(Icons.map),
+                ),
+              ],
             ),
           ],
         ),
@@ -119,21 +133,24 @@ class GeolocMapAlert extends ConsumerWidget {
     for (var i = 0; i < geolocList.length; i++) {
       markerList.add(
         Marker(
-          point: LatLng(
-            geolocList[i].latitude.toDouble(),
-            geolocList[i].longitude.toDouble(),
-          ),
-          builder: (context) {
-            return const Text(
-              '*',
-              style: TextStyle(
-                fontSize: 20,
-                color: Colors.redAccent,
-              ),
-            );
-          },
+          point: LatLng(geolocList[i].latitude.toDouble(), geolocList[i].longitude.toDouble()),
+          builder: (context) => const Text('*', style: TextStyle(fontSize: 20, color: Colors.redAccent)),
         ),
       );
     }
+  }
+
+  ///
+  void makeUniqueTimeGeolocList() {
+    uniqueTimeGeolocList = [];
+
+    final dtList = <String>[];
+    geolocList.forEach((element) {
+      if (!dtList.contains(element.time)) {
+        uniqueTimeGeolocList.add(element);
+      }
+
+      dtList.add(element.time);
+    });
   }
 }
