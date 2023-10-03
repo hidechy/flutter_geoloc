@@ -122,12 +122,7 @@ class GeolocMapAlert extends ConsumerWidget {
     boundsLatLngDiffSmall = (latDiff < lngDiff) ? latDiff : lngDiff;
     boundsInner = boundsLatLngDiffSmall * 0.2;
 
-    boundsLatLngMap = {
-      'minLat': minLat,
-      'maxLat': maxLat,
-      'minLng': minLng,
-      'maxLng': maxLng,
-    };
+    boundsLatLngMap = {'minLat': minLat, 'maxLat': maxLat, 'minLng': minLng, 'maxLng': maxLng};
   }
 
   ///
@@ -148,19 +143,51 @@ class GeolocMapAlert extends ConsumerWidget {
   void makeUniqueTimeGeolocList() {
     uniqueTimeGeolocList = [];
 
-    List<Geoloc> list = [];
+    var originLat = '';
+    var originLng = '';
+    var destLat = '';
+    var destLng = '';
 
-    final dtList = <String>[];
-    geolocList.forEach((element) {
-      if (!dtList.contains(element.time)) {
-        list.add(element);
+    var distance = '';
+
+    var hundred = '';
+
+    var originTime = '';
+    var destTime = '';
+
+    geolocList.sort((a, b) => a.time.compareTo(b.time));
+
+    uniqueTimeGeolocList.add(geolocList[0]);
+
+    for (var i = 1; i < geolocList.length; i++) {
+      originLat = geolocList[i - 1].latitude;
+      originLng = geolocList[i - 1].longitude;
+      destLat = geolocList[i].latitude;
+      destLng = geolocList[i].longitude;
+
+      originTime = geolocList[i - 1].time;
+      destTime = geolocList[i].time;
+
+      if ((originLat == destLat) && (originLng == destLng)) {
+        continue;
       }
 
-      dtList.add(element.time);
-    });
+      if (originTime == destTime) {
+        continue;
+      }
 
-    list.sort((a, b) => a.time.compareTo(b.time));
+      distance = utility.calcDistance(
+        originLat: geolocList[i - 1].latitude.toDouble(),
+        originLng: geolocList[i - 1].longitude.toDouble(),
+        destLat: geolocList[i].latitude.toDouble(),
+        destLng: geolocList[i].longitude.toDouble(),
+      );
 
-    uniqueTimeGeolocList = list;
+      hundred = distance.split('.')[1].substring(0, 1);
+
+      if (hundred.toInt() > 0) {
+        uniqueTimeGeolocList.add(geolocList[i]);
+      }
+    }
   }
 }

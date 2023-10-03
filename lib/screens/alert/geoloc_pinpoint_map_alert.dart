@@ -103,6 +103,8 @@ class GeolocPinpointMapAlert extends ConsumerWidget {
 
     geolocList.forEach(
       (element) {
+        final exTime = element.time.split(':');
+
         list.add(
           Column(
             children: [
@@ -119,7 +121,7 @@ class GeolocPinpointMapAlert extends ConsumerWidget {
                 },
                 child: CircleAvatar(
                   backgroundColor: (pinpointTime == element.time) ? Colors.orangeAccent.withOpacity(0.6) : Colors.black,
-                  child: Text(element.time, style: const TextStyle(fontSize: 8)),
+                  child: Text('${exTime[0]}:${exTime[1]}', style: const TextStyle(fontSize: 12)),
                 ),
               ),
               const SizedBox(height: 10),
@@ -144,7 +146,7 @@ class GeolocPinpointMapAlert extends ConsumerWidget {
 
     await googleMap.animateCamera(
       CameraUpdate.newCameraPosition(
-        CameraPosition(target: LatLng(geoloc.latitude.toDouble(), geoloc.longitude.toDouble()), zoom: 15),
+        CameraPosition(target: LatLng(geoloc.latitude.toDouble(), geoloc.longitude.toDouble()), zoom: 15, tilt: 50),
       ),
     );
   }
