@@ -164,7 +164,7 @@ class GeolocPinpointMapAlert extends ConsumerWidget {
 
   ///
   void setMapParam() {
-    var pinpointMapZoom = _ref.watch(mapPinpointProvider.select((value) => value.pinpointMapZoom));
+    final pinpointMapZoom = _ref.watch(mapPinpointProvider.select((value) => value.pinpointMapZoom));
 
     final latLng = LatLng(geolocList[0].latitude.toDouble(), geolocList[0].longitude.toDouble());
     initialCameraPosition = CameraPosition(target: latLng, zoom: pinpointMapZoom.toDouble(), tilt: 50);
@@ -172,7 +172,7 @@ class GeolocPinpointMapAlert extends ConsumerWidget {
 
   ///
   Future<void> listNameTap({required Geoloc geoloc}) async {
-    var pinpointMapZoom = _ref.watch(mapPinpointProvider.select((value) => value.pinpointMapZoom));
+    final pinpointMapZoom = _ref.watch(mapPinpointProvider.select((value) => value.pinpointMapZoom));
 
     final googleMap = await mapController.future;
 
