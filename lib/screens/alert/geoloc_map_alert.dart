@@ -143,51 +143,17 @@ class GeolocMapAlert extends ConsumerWidget {
   void makeUniqueTimeGeolocList() {
     uniqueTimeGeolocList = [];
 
-    var originLat = '';
-    var originLng = '';
-    var destLat = '';
-    var destLng = '';
-
-    var distance = '';
-
-    var hundred = '';
-
-    var originTime = '';
-    var destTime = '';
-
     geolocList.sort((a, b) => a.time.compareTo(b.time));
 
-    uniqueTimeGeolocList.add(geolocList[0]);
+    final keepLL = <String>[];
+    geolocList.forEach((element) {
+      final ll = '${element.latitude.substring(0, 7)}|${element.longitude.substring(0, 8)}';
 
-    for (var i = 1; i < geolocList.length; i++) {
-      originLat = geolocList[i - 1].latitude;
-      originLng = geolocList[i - 1].longitude;
-      destLat = geolocList[i].latitude;
-      destLng = geolocList[i].longitude;
-
-      originTime = geolocList[i - 1].time;
-      destTime = geolocList[i].time;
-
-      if ((originLat == destLat) && (originLng == destLng)) {
-        continue;
+      if (!keepLL.contains(ll)) {
+        uniqueTimeGeolocList.add(element);
       }
 
-      if (originTime == destTime) {
-        continue;
-      }
-
-      distance = utility.calcDistance(
-        originLat: geolocList[i - 1].latitude.toDouble(),
-        originLng: geolocList[i - 1].longitude.toDouble(),
-        destLat: geolocList[i].latitude.toDouble(),
-        destLng: geolocList[i].longitude.toDouble(),
-      );
-
-      hundred = distance.split('.')[1].substring(0, 1);
-
-      if (hundred.toInt() > 0) {
-        uniqueTimeGeolocList.add(geolocList[i]);
-      }
-    }
+      keepLL.add(ll);
+    });
   }
 }

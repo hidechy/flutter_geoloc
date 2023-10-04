@@ -9,5 +9,8 @@ class MapPinpointState with _$MapPinpointState {
     @Default('') String pinpointTime,
     @Default(0) double pinpointLat,
     @Default(0) double pinpointLng,
+
+    ///
+    @Default(14) int pinpointMapZoom,
   }) = _MapPinpointState;
 }

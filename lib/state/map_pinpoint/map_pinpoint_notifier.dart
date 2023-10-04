@@ -10,6 +10,7 @@ final mapPinpointProvider = StateNotifierProvider.autoDispose<MapPinpointNotifie
 class MapPinpointNotifier extends StateNotifier<MapPinpointState> {
   MapPinpointNotifier(super.state);
 
+  ///
   Future<void> setPinpointLatLng({
     required String date,
     required String time,
@@ -22,6 +23,9 @@ class MapPinpointNotifier extends StateNotifier<MapPinpointState> {
         pinpointLat: lat,
         pinpointLng: lng,
       );
+
+  ///
+  Future<void> setPinpointMapZoom({required int zoom}) async => state = state.copyWith(pinpointMapZoom: zoom);
 }
 
 ////////////////////////////////////////////////

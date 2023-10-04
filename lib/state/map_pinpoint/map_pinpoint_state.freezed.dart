@@ -21,6 +21,9 @@ mixin _$MapPinpointState {
   double get pinpointLat => throw _privateConstructorUsedError;
   double get pinpointLng => throw _privateConstructorUsedError;
 
+  ///
+  int get pinpointMapZoom => throw _privateConstructorUsedError;
+
   @JsonKey(ignore: true)
   $MapPinpointStateCopyWith<MapPinpointState> get copyWith =>
       throw _privateConstructorUsedError;
@@ -36,7 +39,8 @@ abstract class $MapPinpointStateCopyWith<$Res> {
       {String pinpointDate,
       String pinpointTime,
       double pinpointLat,
-      double pinpointLng});
+      double pinpointLng,
+      int pinpointMapZoom});
 }
 
 /// @nodoc
@@ -56,6 +60,7 @@ class _$MapPinpointStateCopyWithImpl<$Res, $Val extends MapPinpointState>
     Object? pinpointTime = null,
     Object? pinpointLat = null,
     Object? pinpointLng = null,
+    Object? pinpointMapZoom = null,
   }) {
     return _then(_value.copyWith(
       pinpointDate: null == pinpointDate
@@ -74,6 +79,10 @@ class _$MapPinpointStateCopyWithImpl<$Res, $Val extends MapPinpointState>
           ? _value.pinpointLng
           : pinpointLng // ignore: cast_nullable_to_non_nullable
               as double,
+      pinpointMapZoom: null == pinpointMapZoom
+          ? _value.pinpointMapZoom
+          : pinpointMapZoom // ignore: cast_nullable_to_non_nullable
+              as int,
     ) as $Val);
   }
 }
@@ -90,7 +99,8 @@ abstract class _$$_MapPinpointStateCopyWith<$Res>
       {String pinpointDate,
       String pinpointTime,
       double pinpointLat,
-      double pinpointLng});
+      double pinpointLng,
+      int pinpointMapZoom});
 }
 
 /// @nodoc
@@ -108,6 +118,7 @@ class __$$_MapPinpointStateCopyWithImpl<$Res>
     Object? pinpointTime = null,
     Object? pinpointLat = null,
     Object? pinpointLng = null,
+    Object? pinpointMapZoom = null,
   }) {
     return _then(_$_MapPinpointState(
       pinpointDate: null == pinpointDate
@@ -126,6 +137,10 @@ class __$$_MapPinpointStateCopyWithImpl<$Res>
           ? _value.pinpointLng
           : pinpointLng // ignore: cast_nullable_to_non_nullable
               as double,
+      pinpointMapZoom: null == pinpointMapZoom
+          ? _value.pinpointMapZoom
+          : pinpointMapZoom // ignore: cast_nullable_to_non_nullable
+              as int,
     ));
   }
 }
@@ -137,7 +152,8 @@ class _$_MapPinpointState implements _MapPinpointState {
       {this.pinpointDate = '',
       this.pinpointTime = '',
       this.pinpointLat = 0,
-      this.pinpointLng = 0});
+      this.pinpointLng = 0,
+      this.pinpointMapZoom = 14});
 
   @override
   @JsonKey()
@@ -152,9 +168,14 @@ class _$_MapPinpointState implements _MapPinpointState {
   @JsonKey()
   final double pinpointLng;
 
+  ///
+  @override
+  @JsonKey()
+  final int pinpointMapZoom;
+
   @override
   String toString() {
-    return 'MapPinpointState(pinpointDate: $pinpointDate, pinpointTime: $pinpointTime, pinpointLat: $pinpointLat, pinpointLng: $pinpointLng)';
+    return 'MapPinpointState(pinpointDate: $pinpointDate, pinpointTime: $pinpointTime, pinpointLat: $pinpointLat, pinpointLng: $pinpointLng, pinpointMapZoom: $pinpointMapZoom)';
   }
 
   @override
@@ -169,12 +190,14 @@ class _$_MapPinpointState implements _MapPinpointState {
             (identical(other.pinpointLat, pinpointLat) ||
                 other.pinpointLat == pinpointLat) &&
             (identical(other.pinpointLng, pinpointLng) ||
-                other.pinpointLng == pinpointLng));
+                other.pinpointLng == pinpointLng) &&
+            (identical(other.pinpointMapZoom, pinpointMapZoom) ||
+                other.pinpointMapZoom == pinpointMapZoom));
   }
 
   @override
-  int get hashCode => Object.hash(
-      runtimeType, pinpointDate, pinpointTime, pinpointLat, pinpointLng);
+  int get hashCode => Object.hash(runtimeType, pinpointDate, pinpointTime,
+      pinpointLat, pinpointLng, pinpointMapZoom);
 
   @JsonKey(ignore: true)
   @override
@@ -188,7 +211,8 @@ abstract class _MapPinpointState implements MapPinpointState {
       {final String pinpointDate,
       final String pinpointTime,
       final double pinpointLat,
-      final double pinpointLng}) = _$_MapPinpointState;
+      final double pinpointLng,
+      final int pinpointMapZoom}) = _$_MapPinpointState;
 
   @override
   String get pinpointDate;
@@ -198,6 +222,10 @@ abstract class _MapPinpointState implements MapPinpointState {
   double get pinpointLat;
   @override
   double get pinpointLng;
+  @override
+
+  ///
+  int get pinpointMapZoom;
   @override
   @JsonKey(ignore: true)
   _$$_MapPinpointStateCopyWith<_$_MapPinpointState> get copyWith =>

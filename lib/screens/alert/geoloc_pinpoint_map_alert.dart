@@ -43,43 +43,71 @@ class GeolocPinpointMapAlert extends ConsumerWidget {
     };
     //==============================
 
+    ///
+    final radiusNumbers = <int>[];
+    for (var i = 12; i <= 19; i++) {
+      radiusNumbers.add(i);
+    }
+
+    ///
+    final radiusDropDown = DropdownButton(
+      dropdownColor: Colors.pinkAccent.withOpacity(0.1),
+      iconEnabledColor: Colors.white,
+      items: radiusNumbers.map((e) {
+        return DropdownMenuItem(
+          value: e,
+          child: Text(e.toString(), style: const TextStyle(fontSize: 12)),
+        );
+      }).toList(),
+      value: mapPinpointState.pinpointMapZoom,
+      onChanged: (value) async {
+        await _ref.watch(mapPinpointProvider.notifier).setPinpointMapZoom(zoom: value!);
+      },
+    );
+
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: SafeArea(
         child: Row(
           children: [
             Expanded(
-                child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: 10),
-                Row(
-                  children: [
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('${mapPinpointState.pinpointDate} ${mapPinpointState.pinpointTime}'),
-                          Text(
-                            '${mapPinpointState.pinpointLat} / ${mapPinpointState.pinpointLng}',
-                            style: const TextStyle(fontSize: 10),
-                          ),
-                        ],
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 10),
+                  Row(
+                    children: [
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text('${mapPinpointState.pinpointDate} ${mapPinpointState.pinpointTime}'),
+                                Text(
+                                  '${mapPinpointState.pinpointLat} / ${mapPinpointState.pinpointLng}',
+                                  style: const TextStyle(fontSize: 10),
+                                ),
+                              ],
+                            ),
+                            radiusDropDown,
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 20),
-                Expanded(
-                  child: GoogleMap(
-                    onMapCreated: mapController.complete,
-                    initialCameraPosition: initialCameraPosition,
-                    markers: markers,
+                    ],
                   ),
-                ),
-              ],
-            )),
+                  Expanded(
+                    child: GoogleMap(
+                      onMapCreated: mapController.complete,
+                      initialCameraPosition: initialCameraPosition,
+                      markers: markers,
+                    ),
+                  ),
+                ],
+              ),
+            ),
             SizedBox(
               width: 60,
               child: Column(
@@ -136,17 +164,25 @@ class GeolocPinpointMapAlert extends ConsumerWidget {
 
   ///
   void setMapParam() {
+    var pinpointMapZoom = _ref.watch(mapPinpointProvider.select((value) => value.pinpointMapZoom));
+
     final latLng = LatLng(geolocList[0].latitude.toDouble(), geolocList[0].longitude.toDouble());
-    initialCameraPosition = CameraPosition(target: latLng, zoom: 15, tilt: 50);
+    initialCameraPosition = CameraPosition(target: latLng, zoom: pinpointMapZoom.toDouble(), tilt: 50);
   }
 
   ///
   Future<void> listNameTap({required Geoloc geoloc}) async {
+    var pinpointMapZoom = _ref.watch(mapPinpointProvider.select((value) => value.pinpointMapZoom));
+
     final googleMap = await mapController.future;
 
     await googleMap.animateCamera(
       CameraUpdate.newCameraPosition(
-        CameraPosition(target: LatLng(geoloc.latitude.toDouble(), geoloc.longitude.toDouble()), zoom: 15, tilt: 50),
+        CameraPosition(
+          target: LatLng(geoloc.latitude.toDouble(), geoloc.longitude.toDouble()),
+          zoom: pinpointMapZoom.toDouble(),
+          tilt: 50,
+        ),
       ),
     );
   }
