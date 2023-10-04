@@ -9,6 +9,8 @@ import 'package:latlong2/latlong.dart';
 
 import '../../extensions/extensions.dart';
 import '../../models/geoloc.dart';
+import '../../state/location_address/location_address_notifier.dart';
+import '../../state/location_address/location_address_request_state.dart';
 import '../../state/map_hide/map_hide_notifier.dart';
 import '../../state/map_pinpoint/map_pinpoint_notifier.dart';
 import '../../utility/utility.dart';
@@ -30,11 +32,17 @@ class GeolocMapAlert extends ConsumerWidget {
 
   List<Geoloc> uniqueTimeGeolocList = [];
 
+  Map<String, String> locationAddressMap = {};
+
   Utility utility = Utility();
+
+  late WidgetRef _ref;
 
   ///
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    _ref = ref;
+
     makeBounds();
 
     makeMarker();
@@ -89,7 +97,10 @@ class GeolocMapAlert extends ConsumerWidget {
 
                     await GeolocDialog(
                       context: context,
-                      widget: GeolocPinpointMapAlert(geolocList: uniqueTimeGeolocList),
+                      widget: GeolocPinpointMapAlert(
+                        geolocList: uniqueTimeGeolocList,
+                        locationAddressMap: locationAddressMap,
+                      ),
                     );
                   },
                   icon: const Icon(Icons.map),
@@ -142,6 +153,7 @@ class GeolocMapAlert extends ConsumerWidget {
   ///
   void makeUniqueTimeGeolocList() {
     uniqueTimeGeolocList = [];
+    locationAddressMap = {};
 
     var originLat = '';
     var originLng = '';
@@ -157,7 +169,15 @@ class GeolocMapAlert extends ConsumerWidget {
 
     geolocList.sort((a, b) => a.time.compareTo(b.time));
 
+    //==========================//
     uniqueTimeGeolocList.add(geolocList[0]);
+    final locationAddressState = _ref.watch(locationAddressProvider(
+      LocationAddressRequestState(latitude: geolocList[0].latitude, longitude: geolocList[0].longitude),
+    ));
+    final addr = [locationAddressState.prefecture, locationAddressState.city, locationAddressState.town];
+    final address = addr.join();
+    locationAddressMap['${geolocList[0].latitude}|${geolocList[0].longitude}'] = (address != '') ? address : '-';
+    //==========================//
 
     for (var i = 1; i < geolocList.length; i++) {
       originLat = geolocList[i - 1].latitude;
@@ -188,6 +208,16 @@ class GeolocMapAlert extends ConsumerWidget {
 
         if (hundred.toInt() > 0) {
           uniqueTimeGeolocList.add(geolocList[i]);
+
+          final locationAddressState = _ref.watch(locationAddressProvider(
+            LocationAddressRequestState(latitude: geolocList[i].latitude, longitude: geolocList[i].longitude),
+          ));
+
+          final addr = [locationAddressState.prefecture, locationAddressState.city, locationAddressState.town];
+
+          final address = addr.join();
+
+          locationAddressMap['${geolocList[i].latitude}|${geolocList[i].longitude}'] = (address != '') ? address : '-';
         }
       } catch (e) {
         debugPrint('$originTime : $originLat | $originLng');

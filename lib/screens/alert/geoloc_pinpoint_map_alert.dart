@@ -11,9 +11,11 @@ import '../../models/geoloc.dart';
 import '../../state/map_pinpoint/map_pinpoint_notifier.dart';
 
 class GeolocPinpointMapAlert extends ConsumerWidget {
-  GeolocPinpointMapAlert({super.key, required this.geolocList});
+  GeolocPinpointMapAlert({super.key, required this.geolocList, required this.locationAddressMap});
 
   final List<Geoloc> geolocList;
+
+  final Map<String, String> locationAddressMap;
 
   late CameraPosition initialCameraPosition;
 
@@ -65,6 +67,10 @@ class GeolocPinpointMapAlert extends ConsumerWidget {
       },
     );
 
+    var address = (locationAddressMap['${mapPinpointState.pinpointLat}|${mapPinpointState.pinpointLng}'] != null)
+        ? locationAddressMap['${mapPinpointState.pinpointLat}|${mapPinpointState.pinpointLng}']
+        : '';
+
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: SafeArea(
@@ -90,6 +96,7 @@ class GeolocPinpointMapAlert extends ConsumerWidget {
                                   '${mapPinpointState.pinpointLat} / ${mapPinpointState.pinpointLng}',
                                   style: const TextStyle(fontSize: 10),
                                 ),
+                                Text(address ?? '', style: const TextStyle(fontSize: 12)),
                               ],
                             ),
                             radiusDropDown,
@@ -110,12 +117,7 @@ class GeolocPinpointMapAlert extends ConsumerWidget {
             ),
             SizedBox(
               width: 60,
-              child: Column(
-                children: [
-                  const SizedBox(height: 40),
-                  Expanded(child: displayGeolocList()),
-                ],
-              ),
+              child: Column(children: [const SizedBox(height: 40), Expanded(child: displayGeolocList())]),
             ),
           ],
         ),
