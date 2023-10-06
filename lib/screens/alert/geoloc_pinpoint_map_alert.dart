@@ -9,13 +9,13 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../extensions/extensions.dart';
 import '../../models/geoloc.dart';
 import '../../state/map_pinpoint/map_pinpoint_notifier.dart';
+import '../../state/reverse_geo/reverse_geo_notifier.dart';
+import '../../state/reverse_geo/reverse_geo_request_state.dart';
 
 class GeolocPinpointMapAlert extends ConsumerWidget {
-  GeolocPinpointMapAlert({super.key, required this.geolocList, required this.locationAddressMap});
+  GeolocPinpointMapAlert({super.key, required this.geolocList});
 
   final List<Geoloc> geolocList;
-
-  final Map<String, String> locationAddressMap;
 
   late CameraPosition initialCameraPosition;
 
@@ -51,6 +51,8 @@ class GeolocPinpointMapAlert extends ConsumerWidget {
       radiusNumbers.add(i);
     }
 
+    final addressComponentsNameList = ref.watch(reverseGeoProvider.select((value) => value.addressComponentsNameList));
+
     ///
     final radiusDropDown = DropdownButton(
       dropdownColor: Colors.pinkAccent.withOpacity(0.1),
@@ -66,10 +68,6 @@ class GeolocPinpointMapAlert extends ConsumerWidget {
         await _ref.watch(mapPinpointProvider.notifier).setPinpointMapZoom(zoom: value!);
       },
     );
-
-    var address = (locationAddressMap['${mapPinpointState.pinpointLat}|${mapPinpointState.pinpointLng}'] != null)
-        ? locationAddressMap['${mapPinpointState.pinpointLat}|${mapPinpointState.pinpointLng}']
-        : '';
 
     return Scaffold(
       backgroundColor: Colors.transparent,
@@ -96,7 +94,10 @@ class GeolocPinpointMapAlert extends ConsumerWidget {
                                   '${mapPinpointState.pinpointLat} / ${mapPinpointState.pinpointLng}',
                                   style: const TextStyle(fontSize: 10),
                                 ),
-                                Text(address ?? '', style: const TextStyle(fontSize: 12)),
+                                Text(
+                                  addressComponentsNameList.join(),
+                                  style: const TextStyle(fontSize: 10),
+                                ),
                               ],
                             ),
                             radiusDropDown,
@@ -145,6 +146,10 @@ class GeolocPinpointMapAlert extends ConsumerWidget {
                         time: element.time,
                         lat: element.latitude.toDouble(),
                         lng: element.longitude.toDouble(),
+                      );
+
+                  await _ref.watch(reverseGeoProvider.notifier).getReverseGeoState(
+                        param: ReverseGeoRequestState(latitude: element.latitude, longitude: element.longitude),
                       );
 
                   await listNameTap(geoloc: element);
