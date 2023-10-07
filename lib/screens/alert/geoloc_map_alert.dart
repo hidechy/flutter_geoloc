@@ -157,16 +157,14 @@ class GeolocMapAlert extends ConsumerWidget {
     var destLat = '';
     var destLng = '';
 
-    var distance = '';
-
-    var hundred = '';
-
     var originTime = '';
     var destTime = '';
 
     geolocList.sort((a, b) => a.time.compareTo(b.time));
 
     uniqueTimeGeolocList.add(geolocList[0]);
+
+    final keepLL = <String>[];
 
     for (var i = 1; i < geolocList.length; i++) {
       originLat = geolocList[i - 1].latitude;
@@ -186,18 +184,13 @@ class GeolocMapAlert extends ConsumerWidget {
       }
 
       try {
-        distance = utility.calcDistance(
-          originLat: geolocList[i - 1].latitude.toDouble(),
-          originLng: geolocList[i - 1].longitude.toDouble(),
-          destLat: geolocList[i].latitude.toDouble(),
-          destLng: geolocList[i].longitude.toDouble(),
-        );
+        final ll = '${geolocList[i].latitude.substring(0, 5)}|${geolocList[i].longitude.substring(0, 6)}';
 
-        hundred = distance.split('.')[1].substring(0, 1);
-
-        if (hundred.toInt() > 0) {
+        if (!keepLL.contains(ll)) {
           uniqueTimeGeolocList.add(geolocList[i]);
         }
+
+        keepLL.add(ll);
       } catch (e) {
         debugPrint('$originTime : $originLat | $originLng');
         debugPrint('$destTime : $destLat | $destLng');

@@ -1,107 +1,82 @@
-// ignore_for_file: must_be_immutable, cascade_invocations
+// ignore_for_file: must_be_immutable
 
 import 'package:flutter/material.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../extensions/extensions.dart';
 import '../../models/geoloc.dart';
-import '../../view_model/geoloc_viewmodel.dart';
-import 'geoloc_dialog.dart';
-import 'geoloc_map_alert.dart';
+import 'pages/geoloc_display_page.dart';
 
-class GeolocDisplayAlert extends ConsumerWidget {
+class TabInfo {
+  TabInfo(this.label, this.widget);
+
+  String label;
+  Widget widget;
+}
+
+class GeolocDisplayAlert extends StatelessWidget {
   GeolocDisplayAlert({super.key, required this.date});
 
   final DateTime date;
 
   List<Geoloc> geolocList = [];
 
-  late WidgetRef _ref;
+  List<TabInfo> tabs = [];
 
   ///
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    _ref = ref;
+  Widget build(BuildContext context) {
+    makeTab();
 
-    return AlertDialog(
-      titlePadding: EdgeInsets.zero,
-      contentPadding: EdgeInsets.zero,
-      backgroundColor: Colors.transparent,
-      insetPadding: EdgeInsets.zero,
-      content: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
-        width: double.infinity,
-        height: double.infinity,
-        child: DefaultTextStyle(
-          style: const TextStyle(fontSize: 12),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(width: context.screenSize.width),
-              const SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(date.yyyymmdd),
-                  GestureDetector(
-                    onTap: () {
-                      GeolocDialog(
-                        context: context,
-                        widget: GeolocMapAlert(geolocList: geolocList),
-                      );
-                    },
-                    child: const Icon(Icons.map),
-                  ),
-                ],
+    return DefaultTabController(
+      length: tabs.length,
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        appBar: PreferredSize(
+          preferredSize: const Size.fromHeight(50),
+          child: AppBar(
+            backgroundColor: Colors.transparent,
+            //-------------------------//これを消すと「←」が出てくる（消さない）
+            leading: const Icon(
+              Icons.check_box_outline_blank,
+              color: Colors.transparent,
+            ),
+            //-------------------------//これを消すと「←」が出てくる（消さない）
+
+            bottom: TabBar(
+              isScrollable: true,
+              indicatorColor: Colors.blueAccent,
+              tabs: tabs.map((TabInfo tab) => Tab(text: tab.label)).toList(),
+            ),
+
+            flexibleSpace: const DecoratedBox(
+              decoration: BoxDecoration(
+                color: Colors.transparent,
               ),
-              Divider(
-                color: Colors.white.withOpacity(0.5),
-                thickness: 2,
-              ),
-              Expanded(child: displayGeoloc()),
-            ],
+            ),
           ),
+        ),
+        body: TabBarView(
+          children: tabs.map((tab) => tab.widget).toList(),
         ),
       ),
     );
   }
 
   ///
-  Widget displayGeoloc() {
-    final list = <Widget>[];
+  void makeTab() {
+    tabs = [];
 
-    final geolocState = _ref.watch(geolocProvider(date));
+    for (var i = 0; i < 7; i++) {
+      final day = date.add(Duration(days: i * -1));
 
-    geolocList = geolocState;
+      final youbi = day.youbiStr.substring(0, 3);
 
-    geolocState.forEach((element) {
-      list.add(
-        Container(
-          padding: const EdgeInsets.all(10),
-          margin: const EdgeInsets.only(bottom: 10),
-          decoration: BoxDecoration(
-            border: Border(
-              bottom: BorderSide(
-                color: Colors.white.withOpacity(0.3),
-              ),
-            ),
-          ),
-          child: DefaultTextStyle(
-            style: const TextStyle(fontSize: 12),
-            child: Row(
-              children: [
-                Expanded(child: Text(element.time)),
-                Expanded(child: Text(element.latitude)),
-                Expanded(child: Text(element.longitude)),
-              ],
-            ),
-          ),
+      tabs.add(
+        TabInfo(
+          '${day.yyyymmdd}($youbi)',
+          GeolocDisplayPage(date: day),
         ),
       );
-    });
-
-    return SingleChildScrollView(
-      child: Column(children: list),
-    );
+    }
   }
 }

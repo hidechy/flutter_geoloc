@@ -152,7 +152,7 @@ class GeolocPinpointMapAlert extends ConsumerWidget {
                         param: ReverseGeoRequestState(latitude: element.latitude, longitude: element.longitude),
                       );
 
-                  await listNameTap(geoloc: element);
+                  await tapListTime(geoloc: element);
                 },
                 child: CircleAvatar(
                   backgroundColor: (pinpointTime == element.time) ? Colors.orangeAccent.withOpacity(0.6) : Colors.black,
@@ -178,7 +178,7 @@ class GeolocPinpointMapAlert extends ConsumerWidget {
   }
 
   ///
-  Future<void> listNameTap({required Geoloc geoloc}) async {
+  Future<void> tapListTime({required Geoloc geoloc}) async {
     final pinpointMapZoom = _ref.watch(mapPinpointProvider.select((value) => value.pinpointMapZoom));
 
     final googleMap = await mapController.future;
