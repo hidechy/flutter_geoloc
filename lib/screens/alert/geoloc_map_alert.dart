@@ -34,6 +34,8 @@ class GeolocMapAlert extends ConsumerWidget {
 
   Utility utility = Utility();
 
+  Map<String, String> distanceMap = {};
+
   ///
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -98,7 +100,10 @@ class GeolocMapAlert extends ConsumerWidget {
 
                     await GeolocDialog(
                       context: context,
-                      widget: GeolocPinpointMapAlert(geolocList: uniqueTimeGeolocList),
+                      widget: GeolocPinpointMapAlert(
+                        geolocList: uniqueTimeGeolocList,
+                        distanceMap: distanceMap,
+                      ),
                     );
                   },
                   icon: const Icon(Icons.map),
@@ -197,6 +202,8 @@ class GeolocMapAlert extends ConsumerWidget {
 
         if (hundred.toInt() > 0) {
           uniqueTimeGeolocList.add(geolocList[i]);
+
+          distanceMap['${geolocList[i].date.yyyymmdd} ${geolocList[i].time}'] = distance;
         }
       } catch (e) {
         debugPrint('$originTime : $originLat | $originLng');

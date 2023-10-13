@@ -13,9 +13,11 @@ import '../../state/reverse_geo/reverse_geo_notifier.dart';
 import '../../state/reverse_geo/reverse_geo_request_state.dart';
 
 class GeolocPinpointMapAlert extends ConsumerWidget {
-  GeolocPinpointMapAlert({super.key, required this.geolocList});
+  GeolocPinpointMapAlert({super.key, required this.geolocList, required this.distanceMap});
 
   final List<Geoloc> geolocList;
+
+  final Map<String, String> distanceMap;
 
   late CameraPosition initialCameraPosition;
 
@@ -69,6 +71,10 @@ class GeolocPinpointMapAlert extends ConsumerWidget {
       },
     );
 
+    final distance = (distanceMap['${mapPinpointState.pinpointDate} ${mapPinpointState.pinpointTime}'] != null)
+        ? '${distanceMap['${mapPinpointState.pinpointDate} ${mapPinpointState.pinpointTime}']} Km'
+        : '';
+
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: SafeArea(
@@ -90,13 +96,20 @@ class GeolocPinpointMapAlert extends ConsumerWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text('${mapPinpointState.pinpointDate} ${mapPinpointState.pinpointTime}'),
-                                Text(
-                                  '${mapPinpointState.pinpointLat} / ${mapPinpointState.pinpointLng}',
+                                DefaultTextStyle(
                                   style: const TextStyle(fontSize: 10),
-                                ),
-                                Text(
-                                  addressComponentsNameList.join(),
-                                  style: const TextStyle(fontSize: 10),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text('${mapPinpointState.pinpointLat} / ${mapPinpointState.pinpointLng}'),
+                                      Text(addressComponentsNameList.join()),
+                                      if (distance != '')
+                                        Container(
+                                          padding: const EdgeInsets.symmetric(vertical: 5),
+                                          child: Text(distance, style: const TextStyle(color: Colors.yellowAccent)),
+                                        ),
+                                    ],
+                                  ),
                                 ),
                               ],
                             ),
