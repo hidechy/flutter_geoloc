@@ -31,6 +31,8 @@ class GeolocPinpointMapAlert extends ConsumerWidget {
 
   final autoScrollController = AutoScrollController();
 
+  Set<Polyline> polylineSet = {};
+
   late WidgetRef _ref;
 
   ///
@@ -56,12 +58,16 @@ class GeolocPinpointMapAlert extends ConsumerWidget {
     //==============================
 
     ///
+    makePolyline();
+
+    ///
+    final addressComponentsNameList = ref.watch(reverseGeoProvider.select((value) => value.addressComponentsNameList));
+
+    ///
     final radiusNumbers = <int>[];
     for (var i = 12; i <= 19; i++) {
       radiusNumbers.add(i);
     }
-
-    final addressComponentsNameList = ref.watch(reverseGeoProvider.select((value) => value.addressComponentsNameList));
 
     ///
     final radiusDropDown = DropdownButton(
@@ -136,51 +142,55 @@ class GeolocPinpointMapAlert extends ConsumerWidget {
                       onMapCreated: mapController.complete,
                       initialCameraPosition: initialCameraPosition,
                       markers: markers,
+                      polylines: polylineSet,
                     ),
                   ),
                   //=======================================
 
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Container(),
-                      Row(
-                        children: [
-                          IconButton(
-                            onPressed: () {
-                              var ppsNum = pinpointSpotNum;
-                              ppsNum--;
-                              if (ppsNum < 0) {
-                                ppsNum = 0;
-                              }
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(geolocListNum.toString()),
+                        Row(
+                          children: [
+                            IconButton(
+                              onPressed: () {
+                                var ppsNum = pinpointSpotNum;
+                                ppsNum--;
+                                if (ppsNum < 0) {
+                                  ppsNum = 0;
+                                }
 
-                              autoScrollController.scrollToIndex(ppsNum);
+                                autoScrollController.scrollToIndex(ppsNum);
 
-                              ref.read(appParamProvider.notifier).setPinpointSpotNum(value: ppsNum);
+                                ref.read(appParamProvider.notifier).setPinpointSpotNum(value: ppsNum);
 
-                              setCurrentSpot(pos: ppsNum);
-                            },
-                            icon: const Icon(Icons.navigate_before),
-                          ),
-                          IconButton(
-                            onPressed: () {
-                              var ppsNum = pinpointSpotNum;
-                              ppsNum++;
-                              if (ppsNum > geolocListNum) {
-                                ppsNum = geolocListNum;
-                              }
+                                setCurrentSpot(pos: ppsNum);
+                              },
+                              icon: const Icon(Icons.navigate_before),
+                            ),
+                            IconButton(
+                              onPressed: () {
+                                var ppsNum = pinpointSpotNum;
+                                ppsNum++;
+                                if (ppsNum >= geolocListNum) {
+                                  ppsNum = geolocListNum;
+                                }
 
-                              autoScrollController.scrollToIndex(ppsNum);
+                                autoScrollController.scrollToIndex(ppsNum);
 
-                              ref.read(appParamProvider.notifier).setPinpointSpotNum(value: ppsNum);
+                                ref.read(appParamProvider.notifier).setPinpointSpotNum(value: ppsNum);
 
-                              setCurrentSpot(pos: ppsNum);
-                            },
-                            icon: const Icon(Icons.navigate_next),
-                          ),
-                        ],
-                      ),
-                    ],
+                                setCurrentSpot(pos: ppsNum);
+                              },
+                              icon: const Icon(Icons.navigate_next),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
@@ -191,6 +201,22 @@ class GeolocPinpointMapAlert extends ConsumerWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  ///
+  Future<void> makePolyline() async {
+    final poly = <LatLng>[];
+
+    geolocList.forEach((element) => poly.add(LatLng(element.latitude.toDouble(), element.longitude.toDouble())));
+
+    polylineSet.add(
+      Polyline(
+        polylineId: const PolylineId('overview_polyline'),
+        color: Colors.redAccent,
+        width: 5,
+        points: poly,
       ),
     );
   }
