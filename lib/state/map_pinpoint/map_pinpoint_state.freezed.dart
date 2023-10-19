@@ -88,11 +88,11 @@ class _$MapPinpointStateCopyWithImpl<$Res, $Val extends MapPinpointState>
 }
 
 /// @nodoc
-abstract class _$$_MapPinpointStateCopyWith<$Res>
+abstract class _$$MapPinpointStateImplCopyWith<$Res>
     implements $MapPinpointStateCopyWith<$Res> {
-  factory _$$_MapPinpointStateCopyWith(
-          _$_MapPinpointState value, $Res Function(_$_MapPinpointState) then) =
-      __$$_MapPinpointStateCopyWithImpl<$Res>;
+  factory _$$MapPinpointStateImplCopyWith(_$MapPinpointStateImpl value,
+          $Res Function(_$MapPinpointStateImpl) then) =
+      __$$MapPinpointStateImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
@@ -104,11 +104,11 @@ abstract class _$$_MapPinpointStateCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$_MapPinpointStateCopyWithImpl<$Res>
-    extends _$MapPinpointStateCopyWithImpl<$Res, _$_MapPinpointState>
-    implements _$$_MapPinpointStateCopyWith<$Res> {
-  __$$_MapPinpointStateCopyWithImpl(
-      _$_MapPinpointState _value, $Res Function(_$_MapPinpointState) _then)
+class __$$MapPinpointStateImplCopyWithImpl<$Res>
+    extends _$MapPinpointStateCopyWithImpl<$Res, _$MapPinpointStateImpl>
+    implements _$$MapPinpointStateImplCopyWith<$Res> {
+  __$$MapPinpointStateImplCopyWithImpl(_$MapPinpointStateImpl _value,
+      $Res Function(_$MapPinpointStateImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -120,7 +120,7 @@ class __$$_MapPinpointStateCopyWithImpl<$Res>
     Object? pinpointLng = null,
     Object? pinpointMapZoom = null,
   }) {
-    return _then(_$_MapPinpointState(
+    return _then(_$MapPinpointStateImpl(
       pinpointDate: null == pinpointDate
           ? _value.pinpointDate
           : pinpointDate // ignore: cast_nullable_to_non_nullable
@@ -147,8 +147,8 @@ class __$$_MapPinpointStateCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$_MapPinpointState implements _MapPinpointState {
-  const _$_MapPinpointState(
+class _$MapPinpointStateImpl implements _MapPinpointState {
+  const _$MapPinpointStateImpl(
       {this.pinpointDate = '',
       this.pinpointTime = '',
       this.pinpointLat = 0,
@@ -182,7 +182,7 @@ class _$_MapPinpointState implements _MapPinpointState {
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_MapPinpointState &&
+            other is _$MapPinpointStateImpl &&
             (identical(other.pinpointDate, pinpointDate) ||
                 other.pinpointDate == pinpointDate) &&
             (identical(other.pinpointTime, pinpointTime) ||
@@ -202,8 +202,9 @@ class _$_MapPinpointState implements _MapPinpointState {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_MapPinpointStateCopyWith<_$_MapPinpointState> get copyWith =>
-      __$$_MapPinpointStateCopyWithImpl<_$_MapPinpointState>(this, _$identity);
+  _$$MapPinpointStateImplCopyWith<_$MapPinpointStateImpl> get copyWith =>
+      __$$MapPinpointStateImplCopyWithImpl<_$MapPinpointStateImpl>(
+          this, _$identity);
 }
 
 abstract class _MapPinpointState implements MapPinpointState {
@@ -212,7 +213,7 @@ abstract class _MapPinpointState implements MapPinpointState {
       final String pinpointTime,
       final double pinpointLat,
       final double pinpointLng,
-      final int pinpointMapZoom}) = _$_MapPinpointState;
+      final int pinpointMapZoom}) = _$MapPinpointStateImpl;
 
   @override
   String get pinpointDate;
@@ -228,6 +229,6 @@ abstract class _MapPinpointState implements MapPinpointState {
   int get pinpointMapZoom;
   @override
   @JsonKey(ignore: true)
-  _$$_MapPinpointStateCopyWith<_$_MapPinpointState> get copyWith =>
+  _$$MapPinpointStateImplCopyWith<_$MapPinpointStateImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

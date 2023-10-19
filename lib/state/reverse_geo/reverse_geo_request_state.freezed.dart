@@ -64,23 +64,25 @@ class _$ReverseGeoRequestStateCopyWithImpl<$Res,
 }
 
 /// @nodoc
-abstract class _$$_ReverseGeoRequestStateCopyWith<$Res>
+abstract class _$$ReverseGeoRequestStateImplCopyWith<$Res>
     implements $ReverseGeoRequestStateCopyWith<$Res> {
-  factory _$$_ReverseGeoRequestStateCopyWith(_$_ReverseGeoRequestState value,
-          $Res Function(_$_ReverseGeoRequestState) then) =
-      __$$_ReverseGeoRequestStateCopyWithImpl<$Res>;
+  factory _$$ReverseGeoRequestStateImplCopyWith(
+          _$ReverseGeoRequestStateImpl value,
+          $Res Function(_$ReverseGeoRequestStateImpl) then) =
+      __$$ReverseGeoRequestStateImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call({String latitude, String longitude});
 }
 
 /// @nodoc
-class __$$_ReverseGeoRequestStateCopyWithImpl<$Res>
+class __$$ReverseGeoRequestStateImplCopyWithImpl<$Res>
     extends _$ReverseGeoRequestStateCopyWithImpl<$Res,
-        _$_ReverseGeoRequestState>
-    implements _$$_ReverseGeoRequestStateCopyWith<$Res> {
-  __$$_ReverseGeoRequestStateCopyWithImpl(_$_ReverseGeoRequestState _value,
-      $Res Function(_$_ReverseGeoRequestState) _then)
+        _$ReverseGeoRequestStateImpl>
+    implements _$$ReverseGeoRequestStateImplCopyWith<$Res> {
+  __$$ReverseGeoRequestStateImplCopyWithImpl(
+      _$ReverseGeoRequestStateImpl _value,
+      $Res Function(_$ReverseGeoRequestStateImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -89,7 +91,7 @@ class __$$_ReverseGeoRequestStateCopyWithImpl<$Res>
     Object? latitude = null,
     Object? longitude = null,
   }) {
-    return _then(_$_ReverseGeoRequestState(
+    return _then(_$ReverseGeoRequestStateImpl(
       latitude: null == latitude
           ? _value.latitude
           : latitude // ignore: cast_nullable_to_non_nullable
@@ -104,8 +106,8 @@ class __$$_ReverseGeoRequestStateCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$_ReverseGeoRequestState implements _ReverseGeoRequestState {
-  const _$_ReverseGeoRequestState({this.latitude = '', this.longitude = ''});
+class _$ReverseGeoRequestStateImpl implements _ReverseGeoRequestState {
+  const _$ReverseGeoRequestStateImpl({this.latitude = '', this.longitude = ''});
 
   @override
   @JsonKey()
@@ -123,7 +125,7 @@ class _$_ReverseGeoRequestState implements _ReverseGeoRequestState {
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_ReverseGeoRequestState &&
+            other is _$ReverseGeoRequestStateImpl &&
             (identical(other.latitude, latitude) ||
                 other.latitude == latitude) &&
             (identical(other.longitude, longitude) ||
@@ -136,15 +138,15 @@ class _$_ReverseGeoRequestState implements _ReverseGeoRequestState {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_ReverseGeoRequestStateCopyWith<_$_ReverseGeoRequestState> get copyWith =>
-      __$$_ReverseGeoRequestStateCopyWithImpl<_$_ReverseGeoRequestState>(
-          this, _$identity);
+  _$$ReverseGeoRequestStateImplCopyWith<_$ReverseGeoRequestStateImpl>
+      get copyWith => __$$ReverseGeoRequestStateImplCopyWithImpl<
+          _$ReverseGeoRequestStateImpl>(this, _$identity);
 }
 
 abstract class _ReverseGeoRequestState implements ReverseGeoRequestState {
   const factory _ReverseGeoRequestState(
       {final String latitude,
-      final String longitude}) = _$_ReverseGeoRequestState;
+      final String longitude}) = _$ReverseGeoRequestStateImpl;
 
   @override
   String get latitude;
@@ -152,6 +154,6 @@ abstract class _ReverseGeoRequestState implements ReverseGeoRequestState {
   String get longitude;
   @override
   @JsonKey(ignore: true)
-  _$$_ReverseGeoRequestStateCopyWith<_$_ReverseGeoRequestState> get copyWith =>
-      throw _privateConstructorUsedError;
+  _$$ReverseGeoRequestStateImplCopyWith<_$ReverseGeoRequestStateImpl>
+      get copyWith => throw _privateConstructorUsedError;
 }

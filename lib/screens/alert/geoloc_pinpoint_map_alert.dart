@@ -5,9 +5,11 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:scroll_to_index/scroll_to_index.dart';
 
 import '../../extensions/extensions.dart';
 import '../../models/geoloc.dart';
+import '../../state/app_param/app_param_notifier.dart';
 import '../../state/map_pinpoint/map_pinpoint_notifier.dart';
 import '../../state/reverse_geo/reverse_geo_notifier.dart';
 import '../../state/reverse_geo/reverse_geo_request_state.dart';
@@ -19,11 +21,15 @@ class GeolocPinpointMapAlert extends ConsumerWidget {
 
   final Map<String, String> distanceMap;
 
+  int geolocListNum = 0;
+
   late CameraPosition initialCameraPosition;
 
   final Completer<GoogleMapController> mapController = Completer<GoogleMapController>();
 
   late Set<Marker> markers;
+
+  final autoScrollController = AutoScrollController();
 
   late WidgetRef _ref;
 
@@ -31,6 +37,8 @@ class GeolocPinpointMapAlert extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     _ref = ref;
+
+    geolocListNum = geolocList.length;
 
     setMapParam();
 
@@ -74,6 +82,8 @@ class GeolocPinpointMapAlert extends ConsumerWidget {
     final distance = (distanceMap['${mapPinpointState.pinpointDate} ${mapPinpointState.pinpointTime}'] != null)
         ? '${distanceMap['${mapPinpointState.pinpointDate} ${mapPinpointState.pinpointTime}']} Km'
         : '';
+
+    final pinpointSpotNum = ref.watch(appParamProvider.select((value) => value.pinpointSpotNum));
 
     return Scaffold(
       backgroundColor: Colors.transparent,
@@ -119,12 +129,58 @@ class GeolocPinpointMapAlert extends ConsumerWidget {
                       ),
                     ],
                   ),
+
+                  //=======================================
                   Expanded(
                     child: GoogleMap(
                       onMapCreated: mapController.complete,
                       initialCameraPosition: initialCameraPosition,
                       markers: markers,
                     ),
+                  ),
+                  //=======================================
+
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(),
+                      Row(
+                        children: [
+                          IconButton(
+                            onPressed: () {
+                              var ppsNum = pinpointSpotNum;
+                              ppsNum--;
+                              if (ppsNum < 0) {
+                                ppsNum = 0;
+                              }
+
+                              autoScrollController.scrollToIndex(ppsNum);
+
+                              ref.read(appParamProvider.notifier).setPinpointSpotNum(value: ppsNum);
+
+                              setCurrentSpot(pos: ppsNum);
+                            },
+                            icon: const Icon(Icons.navigate_before),
+                          ),
+                          IconButton(
+                            onPressed: () {
+                              var ppsNum = pinpointSpotNum;
+                              ppsNum++;
+                              if (ppsNum > geolocListNum) {
+                                ppsNum = geolocListNum;
+                              }
+
+                              autoScrollController.scrollToIndex(ppsNum);
+
+                              ref.read(appParamProvider.notifier).setPinpointSpotNum(value: ppsNum);
+
+                              setCurrentSpot(pos: ppsNum);
+                            },
+                            icon: const Icon(Icons.navigate_next),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -145,41 +201,48 @@ class GeolocPinpointMapAlert extends ConsumerWidget {
 
     final pinpointTime = _ref.watch(mapPinpointProvider.select((value) => value.pinpointTime));
 
-    geolocList.forEach(
-      (element) {
-        final exTime = element.time.split(':');
+    for (var i = 0; i < geolocList.length; i++) {
+      final exTime = geolocList[i].time.split(':');
 
-        list.add(
-          Column(
+      list.add(
+        AutoScrollTag(
+          key: ValueKey(i),
+          index: i,
+          controller: autoScrollController,
+          child: Column(
             children: [
               GestureDetector(
-                onTap: () async {
-                  await _ref.watch(mapPinpointProvider.notifier).setPinpointLatLng(
-                        date: element.date.yyyymmdd,
-                        time: element.time,
-                        lat: element.latitude.toDouble(),
-                        lng: element.longitude.toDouble(),
-                      );
-
-                  await _ref.watch(reverseGeoProvider.notifier).getReverseGeoState(
-                        param: ReverseGeoRequestState(latitude: element.latitude, longitude: element.longitude),
-                      );
-
-                  await tapListTime(geoloc: element);
-                },
+                onTap: () async => setCurrentSpot(pos: i),
                 child: CircleAvatar(
-                  backgroundColor: (pinpointTime == element.time) ? Colors.orangeAccent.withOpacity(0.6) : Colors.black,
+                  backgroundColor:
+                      (pinpointTime == geolocList[i].time) ? Colors.orangeAccent.withOpacity(0.6) : Colors.black,
                   child: Text('${exTime[0]}:${exTime[1]}', style: const TextStyle(fontSize: 12)),
                 ),
               ),
               const SizedBox(height: 10),
             ],
           ),
-        );
-      },
-    );
+        ),
+      );
+    }
 
-    return SingleChildScrollView(child: Column(children: list));
+    return SingleChildScrollView(controller: autoScrollController, child: Column(children: list));
+  }
+
+  ///
+  Future<void> setCurrentSpot({required int pos}) async {
+    await _ref.watch(mapPinpointProvider.notifier).setPinpointLatLng(
+          date: geolocList[pos].date.yyyymmdd,
+          time: geolocList[pos].time,
+          lat: geolocList[pos].latitude.toDouble(),
+          lng: geolocList[pos].longitude.toDouble(),
+        );
+
+    await _ref.watch(reverseGeoProvider.notifier).getReverseGeoState(
+          param: ReverseGeoRequestState(latitude: geolocList[pos].latitude, longitude: geolocList[pos].longitude),
+        );
+
+    await tapListTime(geoloc: geolocList[pos]);
   }
 
   ///

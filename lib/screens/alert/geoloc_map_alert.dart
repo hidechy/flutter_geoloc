@@ -9,7 +9,7 @@ import 'package:latlong2/latlong.dart';
 
 import '../../extensions/extensions.dart';
 import '../../models/geoloc.dart';
-import '../../state/map_hide/map_hide_notifier.dart';
+import '../../state/app_param/app_param_notifier.dart';
 import '../../state/map_pinpoint/map_pinpoint_notifier.dart';
 import '../../state/reverse_geo/reverse_geo_notifier.dart';
 import '../../state/reverse_geo/reverse_geo_request_state.dart';
@@ -45,7 +45,7 @@ class GeolocMapAlert extends ConsumerWidget {
 
     makeUniqueTimeGeolocList();
 
-    final mapHideState = ref.watch(mapHideProvider);
+    final appParamState = ref.watch(appParamProvider);
 
     return Scaffold(
       backgroundColor: Colors.transparent,
@@ -63,7 +63,7 @@ class GeolocMapAlert extends ConsumerWidget {
                   ),
                 ),
                 children: [
-                  if (mapHideState.mapHide) TileLayer(urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png'),
+                  if (appParamState.mapHide) TileLayer(urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png'),
                   MarkerLayer(markers: markerList),
                 ],
               ),
@@ -75,11 +75,11 @@ class GeolocMapAlert extends ConsumerWidget {
               children: [
                 IconButton(
                   onPressed: () =>
-                      ref.watch(mapHideProvider.notifier).setMapHide(value: (mapHideState.mapHide) ? false : true),
+                      ref.watch(appParamProvider.notifier).setMapHide(value: (appParamState.mapHide) ? false : true),
                   icon: Icon(
                     Icons.ac_unit,
                     color:
-                        (mapHideState.mapHide) ? Colors.yellowAccent.withOpacity(0.6) : Colors.white.withOpacity(0.6),
+                        (appParamState.mapHide) ? Colors.yellowAccent.withOpacity(0.6) : Colors.white.withOpacity(0.6),
                   ),
                 ),
                 IconButton(
@@ -93,17 +93,14 @@ class GeolocMapAlert extends ConsumerWidget {
 
                     await ref.watch(reverseGeoProvider.notifier).getReverseGeoState(
                           param: ReverseGeoRequestState(
-                            latitude: uniqueTimeGeolocList[0].latitude,
-                            longitude: uniqueTimeGeolocList[0].longitude,
-                          ),
+                              latitude: uniqueTimeGeolocList[0].latitude, longitude: uniqueTimeGeolocList[0].longitude),
                         );
+
+                    await ref.read(appParamProvider.notifier).setPinpointSpotNum(value: 0);
 
                     await GeolocDialog(
                       context: context,
-                      widget: GeolocPinpointMapAlert(
-                        geolocList: uniqueTimeGeolocList,
-                        distanceMap: distanceMap,
-                      ),
+                      widget: GeolocPinpointMapAlert(geolocList: uniqueTimeGeolocList, distanceMap: distanceMap),
                     );
                   },
                   icon: const Icon(Icons.map),

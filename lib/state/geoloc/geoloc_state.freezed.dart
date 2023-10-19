@@ -75,22 +75,22 @@ class _$GeolocStateCopyWithImpl<$Res, $Val extends GeolocState>
 }
 
 /// @nodoc
-abstract class _$$_GeolocStateCopyWith<$Res>
+abstract class _$$GeolocStateImplCopyWith<$Res>
     implements $GeolocStateCopyWith<$Res> {
-  factory _$$_GeolocStateCopyWith(
-          _$_GeolocState value, $Res Function(_$_GeolocState) then) =
-      __$$_GeolocStateCopyWithImpl<$Res>;
+  factory _$$GeolocStateImplCopyWith(
+          _$GeolocStateImpl value, $Res Function(_$GeolocStateImpl) then) =
+      __$$GeolocStateImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call({DateTime? date, String time, String latitude, String longitude});
 }
 
 /// @nodoc
-class __$$_GeolocStateCopyWithImpl<$Res>
-    extends _$GeolocStateCopyWithImpl<$Res, _$_GeolocState>
-    implements _$$_GeolocStateCopyWith<$Res> {
-  __$$_GeolocStateCopyWithImpl(
-      _$_GeolocState _value, $Res Function(_$_GeolocState) _then)
+class __$$GeolocStateImplCopyWithImpl<$Res>
+    extends _$GeolocStateCopyWithImpl<$Res, _$GeolocStateImpl>
+    implements _$$GeolocStateImplCopyWith<$Res> {
+  __$$GeolocStateImplCopyWithImpl(
+      _$GeolocStateImpl _value, $Res Function(_$GeolocStateImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -101,7 +101,7 @@ class __$$_GeolocStateCopyWithImpl<$Res>
     Object? latitude = null,
     Object? longitude = null,
   }) {
-    return _then(_$_GeolocState(
+    return _then(_$GeolocStateImpl(
       date: freezed == date
           ? _value.date
           : date // ignore: cast_nullable_to_non_nullable
@@ -124,8 +124,8 @@ class __$$_GeolocStateCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$_GeolocState implements _GeolocState {
-  const _$_GeolocState(
+class _$GeolocStateImpl implements _GeolocState {
+  const _$GeolocStateImpl(
       {this.date, this.time = '', this.latitude = '', this.longitude = ''});
 
   @override
@@ -149,7 +149,7 @@ class _$_GeolocState implements _GeolocState {
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_GeolocState &&
+            other is _$GeolocStateImpl &&
             (identical(other.date, date) || other.date == date) &&
             (identical(other.time, time) || other.time == time) &&
             (identical(other.latitude, latitude) ||
@@ -164,8 +164,8 @@ class _$_GeolocState implements _GeolocState {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_GeolocStateCopyWith<_$_GeolocState> get copyWith =>
-      __$$_GeolocStateCopyWithImpl<_$_GeolocState>(this, _$identity);
+  _$$GeolocStateImplCopyWith<_$GeolocStateImpl> get copyWith =>
+      __$$GeolocStateImplCopyWithImpl<_$GeolocStateImpl>(this, _$identity);
 }
 
 abstract class _GeolocState implements GeolocState {
@@ -173,7 +173,7 @@ abstract class _GeolocState implements GeolocState {
       {final DateTime? date,
       final String time,
       final String latitude,
-      final String longitude}) = _$_GeolocState;
+      final String longitude}) = _$GeolocStateImpl;
 
   @override
   DateTime? get date;
@@ -185,6 +185,6 @@ abstract class _GeolocState implements GeolocState {
   String get longitude;
   @override
   @JsonKey(ignore: true)
-  _$$_GeolocStateCopyWith<_$_GeolocState> get copyWith =>
+  _$$GeolocStateImplCopyWith<_$GeolocStateImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

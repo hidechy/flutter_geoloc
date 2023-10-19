@@ -64,24 +64,25 @@ class _$PeriodLatLngRequestStateCopyWithImpl<$Res,
 }
 
 /// @nodoc
-abstract class _$$_PeriodLatLngRequestStateCopyWith<$Res>
+abstract class _$$PeriodLatLngRequestStateImplCopyWith<$Res>
     implements $PeriodLatLngRequestStateCopyWith<$Res> {
-  factory _$$_PeriodLatLngRequestStateCopyWith(
-          _$_PeriodLatLngRequestState value,
-          $Res Function(_$_PeriodLatLngRequestState) then) =
-      __$$_PeriodLatLngRequestStateCopyWithImpl<$Res>;
+  factory _$$PeriodLatLngRequestStateImplCopyWith(
+          _$PeriodLatLngRequestStateImpl value,
+          $Res Function(_$PeriodLatLngRequestStateImpl) then) =
+      __$$PeriodLatLngRequestStateImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call({String flag, DateTime? date});
 }
 
 /// @nodoc
-class __$$_PeriodLatLngRequestStateCopyWithImpl<$Res>
+class __$$PeriodLatLngRequestStateImplCopyWithImpl<$Res>
     extends _$PeriodLatLngRequestStateCopyWithImpl<$Res,
-        _$_PeriodLatLngRequestState>
-    implements _$$_PeriodLatLngRequestStateCopyWith<$Res> {
-  __$$_PeriodLatLngRequestStateCopyWithImpl(_$_PeriodLatLngRequestState _value,
-      $Res Function(_$_PeriodLatLngRequestState) _then)
+        _$PeriodLatLngRequestStateImpl>
+    implements _$$PeriodLatLngRequestStateImplCopyWith<$Res> {
+  __$$PeriodLatLngRequestStateImplCopyWithImpl(
+      _$PeriodLatLngRequestStateImpl _value,
+      $Res Function(_$PeriodLatLngRequestStateImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -90,7 +91,7 @@ class __$$_PeriodLatLngRequestStateCopyWithImpl<$Res>
     Object? flag = null,
     Object? date = freezed,
   }) {
-    return _then(_$_PeriodLatLngRequestState(
+    return _then(_$PeriodLatLngRequestStateImpl(
       flag: null == flag
           ? _value.flag
           : flag // ignore: cast_nullable_to_non_nullable
@@ -105,8 +106,8 @@ class __$$_PeriodLatLngRequestStateCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$_PeriodLatLngRequestState implements _PeriodLatLngRequestState {
-  const _$_PeriodLatLngRequestState({this.flag = '', this.date});
+class _$PeriodLatLngRequestStateImpl implements _PeriodLatLngRequestState {
+  const _$PeriodLatLngRequestStateImpl({this.flag = '', this.date});
 
   @override
   @JsonKey()
@@ -123,7 +124,7 @@ class _$_PeriodLatLngRequestState implements _PeriodLatLngRequestState {
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_PeriodLatLngRequestState &&
+            other is _$PeriodLatLngRequestStateImpl &&
             (identical(other.flag, flag) || other.flag == flag) &&
             (identical(other.date, date) || other.date == date));
   }
@@ -134,14 +135,15 @@ class _$_PeriodLatLngRequestState implements _PeriodLatLngRequestState {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_PeriodLatLngRequestStateCopyWith<_$_PeriodLatLngRequestState>
-      get copyWith => __$$_PeriodLatLngRequestStateCopyWithImpl<
-          _$_PeriodLatLngRequestState>(this, _$identity);
+  _$$PeriodLatLngRequestStateImplCopyWith<_$PeriodLatLngRequestStateImpl>
+      get copyWith => __$$PeriodLatLngRequestStateImplCopyWithImpl<
+          _$PeriodLatLngRequestStateImpl>(this, _$identity);
 }
 
 abstract class _PeriodLatLngRequestState implements PeriodLatLngRequestState {
   const factory _PeriodLatLngRequestState(
-      {final String flag, final DateTime? date}) = _$_PeriodLatLngRequestState;
+      {final String flag,
+      final DateTime? date}) = _$PeriodLatLngRequestStateImpl;
 
   @override
   String get flag;
@@ -149,6 +151,6 @@ abstract class _PeriodLatLngRequestState implements PeriodLatLngRequestState {
   DateTime? get date;
   @override
   @JsonKey(ignore: true)
-  _$$_PeriodLatLngRequestStateCopyWith<_$_PeriodLatLngRequestState>
+  _$$PeriodLatLngRequestStateImplCopyWith<_$PeriodLatLngRequestStateImpl>
       get copyWith => throw _privateConstructorUsedError;
 }

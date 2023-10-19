@@ -8,7 +8,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:latlong2/latlong.dart';
 
 import '../../extensions/extensions.dart';
-import '../../state/map_hide/map_hide_notifier.dart';
+import '../../state/app_param/app_param_notifier.dart';
 import '../../state/period_lat_lng/period_lat_lng_notifier.dart';
 
 class PeriodMapAlert extends ConsumerWidget {
@@ -35,7 +35,7 @@ class PeriodMapAlert extends ConsumerWidget {
 
     makeMarker();
 
-    final mapHideState = ref.watch(mapHideProvider);
+    final appParamState = ref.watch(appParamProvider);
 
     return Scaffold(
       body: SafeArea(
@@ -58,10 +58,7 @@ class PeriodMapAlert extends ConsumerWidget {
                   ),
                 ),
                 children: [
-                  if (mapHideState.mapHide)
-                    TileLayer(
-                      urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                    ),
+                  if (appParamState.mapHide) TileLayer(urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png'),
                   MarkerLayer(markers: markerList),
                 ],
               ),
@@ -69,14 +66,11 @@ class PeriodMapAlert extends ConsumerWidget {
             //---------------------------------------------
 
             IconButton(
-              onPressed: () {
-                ref.watch(mapHideProvider.notifier).setMapHide(
-                      value: (mapHideState.mapHide) ? false : true,
-                    );
-              },
+              onPressed: () =>
+                  ref.watch(appParamProvider.notifier).setMapHide(value: (appParamState.mapHide) ? false : true),
               icon: Icon(
                 Icons.ac_unit,
-                color: (mapHideState.mapHide) ? Colors.yellowAccent.withOpacity(0.6) : Colors.white.withOpacity(0.6),
+                color: (appParamState.mapHide) ? Colors.yellowAccent.withOpacity(0.6) : Colors.white.withOpacity(0.6),
               ),
             ),
           ],
@@ -107,12 +101,7 @@ class PeriodMapAlert extends ConsumerWidget {
     boundsLatLngDiffSmall = (latDiff < lngDiff) ? latDiff : lngDiff;
     boundsInner = boundsLatLngDiffSmall * 0.2;
 
-    boundsLatLngMap = {
-      'minLat': minLat,
-      'maxLat': maxLat,
-      'minLng': minLng,
-      'maxLng': maxLng,
-    };
+    boundsLatLngMap = {'minLat': minLat, 'maxLat': maxLat, 'minLng': minLng, 'maxLng': maxLng};
   }
 
   ///
@@ -124,17 +113,11 @@ class PeriodMapAlert extends ConsumerWidget {
     for (var i = 0; i < geolocPeriodState.length; i++) {
       markerList.add(
         Marker(
-          point: LatLng(
-            geolocPeriodState[i].latitude.toDouble(),
-            geolocPeriodState[i].longitude.toDouble(),
-          ),
+          point: LatLng(geolocPeriodState[i].latitude.toDouble(), geolocPeriodState[i].longitude.toDouble()),
           builder: (context) {
             return const Text(
               '*',
-              style: TextStyle(
-                fontSize: 20,
-                color: Colors.redAccent,
-              ),
+              style: TextStyle(fontSize: 20, color: Colors.redAccent),
             );
           },
         ),

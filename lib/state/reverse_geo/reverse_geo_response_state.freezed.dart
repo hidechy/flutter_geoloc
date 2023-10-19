@@ -59,23 +59,25 @@ class _$ReverseGeoResponseStateCopyWithImpl<$Res,
 }
 
 /// @nodoc
-abstract class _$$_ReverseGeoResponseStateCopyWith<$Res>
+abstract class _$$ReverseGeoResponseStateImplCopyWith<$Res>
     implements $ReverseGeoResponseStateCopyWith<$Res> {
-  factory _$$_ReverseGeoResponseStateCopyWith(_$_ReverseGeoResponseState value,
-          $Res Function(_$_ReverseGeoResponseState) then) =
-      __$$_ReverseGeoResponseStateCopyWithImpl<$Res>;
+  factory _$$ReverseGeoResponseStateImplCopyWith(
+          _$ReverseGeoResponseStateImpl value,
+          $Res Function(_$ReverseGeoResponseStateImpl) then) =
+      __$$ReverseGeoResponseStateImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call({List<String> addressComponentsNameList});
 }
 
 /// @nodoc
-class __$$_ReverseGeoResponseStateCopyWithImpl<$Res>
+class __$$ReverseGeoResponseStateImplCopyWithImpl<$Res>
     extends _$ReverseGeoResponseStateCopyWithImpl<$Res,
-        _$_ReverseGeoResponseState>
-    implements _$$_ReverseGeoResponseStateCopyWith<$Res> {
-  __$$_ReverseGeoResponseStateCopyWithImpl(_$_ReverseGeoResponseState _value,
-      $Res Function(_$_ReverseGeoResponseState) _then)
+        _$ReverseGeoResponseStateImpl>
+    implements _$$ReverseGeoResponseStateImplCopyWith<$Res> {
+  __$$ReverseGeoResponseStateImplCopyWithImpl(
+      _$ReverseGeoResponseStateImpl _value,
+      $Res Function(_$ReverseGeoResponseStateImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -83,7 +85,7 @@ class __$$_ReverseGeoResponseStateCopyWithImpl<$Res>
   $Res call({
     Object? addressComponentsNameList = null,
   }) {
-    return _then(_$_ReverseGeoResponseState(
+    return _then(_$ReverseGeoResponseStateImpl(
       addressComponentsNameList: null == addressComponentsNameList
           ? _value._addressComponentsNameList
           : addressComponentsNameList // ignore: cast_nullable_to_non_nullable
@@ -94,8 +96,8 @@ class __$$_ReverseGeoResponseStateCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$_ReverseGeoResponseState implements _ReverseGeoResponseState {
-  const _$_ReverseGeoResponseState(
+class _$ReverseGeoResponseStateImpl implements _ReverseGeoResponseState {
+  const _$ReverseGeoResponseStateImpl(
       {final List<String> addressComponentsNameList = const []})
       : _addressComponentsNameList = addressComponentsNameList;
 
@@ -118,7 +120,7 @@ class _$_ReverseGeoResponseState implements _ReverseGeoResponseState {
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_ReverseGeoResponseState &&
+            other is _$ReverseGeoResponseStateImpl &&
             const DeepCollectionEquality().equals(
                 other._addressComponentsNameList, _addressComponentsNameList));
   }
@@ -130,21 +132,20 @@ class _$_ReverseGeoResponseState implements _ReverseGeoResponseState {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_ReverseGeoResponseStateCopyWith<_$_ReverseGeoResponseState>
-      get copyWith =>
-          __$$_ReverseGeoResponseStateCopyWithImpl<_$_ReverseGeoResponseState>(
-              this, _$identity);
+  _$$ReverseGeoResponseStateImplCopyWith<_$ReverseGeoResponseStateImpl>
+      get copyWith => __$$ReverseGeoResponseStateImplCopyWithImpl<
+          _$ReverseGeoResponseStateImpl>(this, _$identity);
 }
 
 abstract class _ReverseGeoResponseState implements ReverseGeoResponseState {
   const factory _ReverseGeoResponseState(
           {final List<String> addressComponentsNameList}) =
-      _$_ReverseGeoResponseState;
+      _$ReverseGeoResponseStateImpl;
 
   @override
   List<String> get addressComponentsNameList;
   @override
   @JsonKey(ignore: true)
-  _$$_ReverseGeoResponseStateCopyWith<_$_ReverseGeoResponseState>
+  _$$ReverseGeoResponseStateImplCopyWith<_$ReverseGeoResponseStateImpl>
       get copyWith => throw _privateConstructorUsedError;
 }
