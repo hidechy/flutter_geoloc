@@ -165,8 +165,6 @@ class GeolocPinpointMapAlert extends ConsumerWidget {
 
                                 autoScrollController.scrollToIndex(ppsNum);
 
-                                ref.read(appParamProvider.notifier).setPinpointSpotNum(value: ppsNum);
-
                                 setCurrentSpot(pos: ppsNum);
                               },
                               icon: const Icon(Icons.navigate_before),
@@ -180,8 +178,6 @@ class GeolocPinpointMapAlert extends ConsumerWidget {
                                 }
 
                                 autoScrollController.scrollToIndex(ppsNum);
-
-                                ref.read(appParamProvider.notifier).setPinpointSpotNum(value: ppsNum);
 
                                 setCurrentSpot(pos: ppsNum);
                               },
@@ -267,6 +263,8 @@ class GeolocPinpointMapAlert extends ConsumerWidget {
     await _ref.watch(reverseGeoProvider.notifier).getReverseGeoState(
           param: ReverseGeoRequestState(latitude: geolocList[pos].latitude, longitude: geolocList[pos].longitude),
         );
+
+    await _ref.read(appParamProvider.notifier).setPinpointSpotNum(value: pos);
 
     await tapListTime(geoloc: geolocList[pos]);
   }
