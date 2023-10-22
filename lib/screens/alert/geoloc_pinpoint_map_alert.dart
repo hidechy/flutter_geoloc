@@ -152,7 +152,13 @@ class GeolocPinpointMapAlert extends ConsumerWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(geolocListNum.toString()),
+                        Row(
+                          children: [
+                            Text((pinpointSpotNum + 1).toString()),
+                            const Text(' / '),
+                            Text(geolocListNum.toString()),
+                          ],
+                        ),
                         Row(
                           children: [
                             IconButton(
