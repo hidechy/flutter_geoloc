@@ -97,109 +97,149 @@ class GeolocPinpointMapAlert extends ConsumerWidget {
         child: Row(
           children: [
             Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              child: Stack(
                 children: [
-                  const SizedBox(height: 10),
-                  Row(
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const SizedBox(width: 10),
+                      //=======================================
                       Expanded(
+                        child: GoogleMap(
+                          onMapCreated: mapController.complete,
+                          initialCameraPosition: initialCameraPosition,
+                          markers: markers,
+                          polylines: polylineSet,
+                          zoomControlsEnabled: false,
+                        ),
+                      ),
+                      //=======================================
+
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                            Row(
                               children: [
-                                Text('${mapPinpointState.pinpointDate} ${mapPinpointState.pinpointTime}'),
-                                DefaultTextStyle(
-                                  style: const TextStyle(fontSize: 10),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text('${mapPinpointState.pinpointLat} / ${mapPinpointState.pinpointLng}'),
-                                      Text(addressComponentsNameList.join()),
-                                      if (distance != '')
-                                        Container(
-                                          padding: const EdgeInsets.symmetric(vertical: 5),
-                                          child: Text(distance, style: const TextStyle(color: Colors.yellowAccent)),
-                                        ),
-                                    ],
-                                  ),
+                                Text((pinpointSpotNum + 1).toString()),
+                                const Text(' / '),
+                                Text(geolocListNum.toString()),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                IconButton(
+                                  onPressed: () {
+                                    var ppsNum = pinpointSpotNum;
+                                    ppsNum--;
+                                    if (ppsNum < 0) {
+                                      ppsNum = 0;
+                                    }
+
+                                    autoScrollController.scrollToIndex(ppsNum);
+
+                                    setCurrentSpot(pos: ppsNum);
+                                  },
+                                  icon: const Icon(Icons.navigate_before),
+                                ),
+                                IconButton(
+                                  onPressed: () {
+                                    var ppsNum = pinpointSpotNum;
+                                    ppsNum++;
+                                    if (ppsNum >= geolocListNum) {
+                                      ppsNum = geolocListNum;
+                                    }
+
+                                    autoScrollController.scrollToIndex(ppsNum);
+
+                                    setCurrentSpot(pos: ppsNum);
+                                  },
+                                  icon: const Icon(Icons.navigate_next),
                                 ),
                               ],
                             ),
-                            radiusDropDown,
                           ],
                         ),
                       ),
                     ],
                   ),
-
-                  //=======================================
-                  Expanded(
-                    child: GoogleMap(
-                      onMapCreated: mapController.complete,
-                      initialCameraPosition: initialCameraPosition,
-                      markers: markers,
-                      polylines: polylineSet,
-                    ),
-                  ),
-                  //=======================================
-
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
+                  Column(
+                    children: [
+                      Expanded(child: Container()),
+                      Container(
+                        width: double.infinity,
+                        margin: const EdgeInsets.all(5),
+                        padding: const EdgeInsets.all(5),
+                        decoration: BoxDecoration(
+                          color: Colors.black.withOpacity(0.5),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Column(
                           children: [
-                            Text((pinpointSpotNum + 1).toString()),
-                            const Text(' / '),
-                            Text(geolocListNum.toString()),
+                            Row(
+                              children: [
+                                const SizedBox(width: 10),
+                                Expanded(
+                                  child: Column(
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Expanded(
+                                            child: Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                const SizedBox(height: 5),
+                                                Text(
+                                                    '${mapPinpointState.pinpointDate} ${mapPinpointState.pinpointTime}'),
+                                                Text(
+                                                  '${mapPinpointState.pinpointLat} / ${mapPinpointState.pinpointLng}',
+                                                  style: const TextStyle(fontSize: 10),
+                                                ),
+                                                if (distance != '')
+                                                  Container(
+                                                    padding: const EdgeInsets.symmetric(vertical: 5),
+                                                    child: Text(
+                                                      distance,
+                                                      style: const TextStyle(color: Colors.yellowAccent, fontSize: 12),
+                                                    ),
+                                                  ),
+                                              ],
+                                            ),
+                                          ),
+                                          const SizedBox(width: 20),
+                                          radiusDropDown,
+                                        ],
+                                      ),
+                                      Container(
+                                        alignment: Alignment.topRight,
+                                        decoration: BoxDecoration(color: Colors.black.withOpacity(0.3)),
+                                        padding: const EdgeInsets.all(5),
+                                        child: Text(
+                                          addressComponentsNameList.join(),
+                                          overflow: TextOverflow.ellipsis,
+                                          maxLines: 1,
+                                          style: const TextStyle(color: Colors.yellowAccent, fontSize: 10),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
                           ],
                         ),
-                        Row(
-                          children: [
-                            IconButton(
-                              onPressed: () {
-                                var ppsNum = pinpointSpotNum;
-                                ppsNum--;
-                                if (ppsNum < 0) {
-                                  ppsNum = 0;
-                                }
-
-                                autoScrollController.scrollToIndex(ppsNum);
-
-                                setCurrentSpot(pos: ppsNum);
-                              },
-                              icon: const Icon(Icons.navigate_before),
-                            ),
-                            IconButton(
-                              onPressed: () {
-                                var ppsNum = pinpointSpotNum;
-                                ppsNum++;
-                                if (ppsNum >= geolocListNum) {
-                                  ppsNum = geolocListNum;
-                                }
-
-                                autoScrollController.scrollToIndex(ppsNum);
-
-                                setCurrentSpot(pos: ppsNum);
-                              },
-                              icon: const Icon(Icons.navigate_next),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
+                      ),
+                      const SizedBox(height: 50),
+                    ],
                   ),
                 ],
               ),
             ),
             SizedBox(
               width: 60,
-              child: Column(children: [const SizedBox(height: 40), Expanded(child: displayGeolocList())]),
+              child: Column(children: [const SizedBox(height: 20), Expanded(child: displayGeolocList())]),
             ),
           ],
         ),
@@ -214,12 +254,7 @@ class GeolocPinpointMapAlert extends ConsumerWidget {
     geolocList.forEach((element) => poly.add(LatLng(element.latitude.toDouble(), element.longitude.toDouble())));
 
     polylineSet.add(
-      Polyline(
-        polylineId: const PolylineId('overview_polyline'),
-        color: Colors.redAccent,
-        width: 5,
-        points: poly,
-      ),
+      Polyline(polylineId: const PolylineId('overview_polyline'), color: Colors.redAccent, width: 5, points: poly),
     );
   }
 
