@@ -18,6 +18,7 @@ final _privateConstructorUsedError = UnsupportedError(
 mixin _$AppParamState {
   bool get mapHide => throw _privateConstructorUsedError;
   int get pinpointSpotNum => throw _privateConstructorUsedError;
+  bool get pinpointMapBoundsDisplay => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $AppParamStateCopyWith<AppParamState> get copyWith =>
@@ -30,7 +31,7 @@ abstract class $AppParamStateCopyWith<$Res> {
           AppParamState value, $Res Function(AppParamState) then) =
       _$AppParamStateCopyWithImpl<$Res, AppParamState>;
   @useResult
-  $Res call({bool mapHide, int pinpointSpotNum});
+  $Res call({bool mapHide, int pinpointSpotNum, bool pinpointMapBoundsDisplay});
 }
 
 /// @nodoc
@@ -48,6 +49,7 @@ class _$AppParamStateCopyWithImpl<$Res, $Val extends AppParamState>
   $Res call({
     Object? mapHide = null,
     Object? pinpointSpotNum = null,
+    Object? pinpointMapBoundsDisplay = null,
   }) {
     return _then(_value.copyWith(
       mapHide: null == mapHide
@@ -58,6 +60,10 @@ class _$AppParamStateCopyWithImpl<$Res, $Val extends AppParamState>
           ? _value.pinpointSpotNum
           : pinpointSpotNum // ignore: cast_nullable_to_non_nullable
               as int,
+      pinpointMapBoundsDisplay: null == pinpointMapBoundsDisplay
+          ? _value.pinpointMapBoundsDisplay
+          : pinpointMapBoundsDisplay // ignore: cast_nullable_to_non_nullable
+              as bool,
     ) as $Val);
   }
 }
@@ -70,7 +76,7 @@ abstract class _$$AppParamStateImplCopyWith<$Res>
       __$$AppParamStateImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({bool mapHide, int pinpointSpotNum});
+  $Res call({bool mapHide, int pinpointSpotNum, bool pinpointMapBoundsDisplay});
 }
 
 /// @nodoc
@@ -86,6 +92,7 @@ class __$$AppParamStateImplCopyWithImpl<$Res>
   $Res call({
     Object? mapHide = null,
     Object? pinpointSpotNum = null,
+    Object? pinpointMapBoundsDisplay = null,
   }) {
     return _then(_$AppParamStateImpl(
       mapHide: null == mapHide
@@ -96,6 +103,10 @@ class __$$AppParamStateImplCopyWithImpl<$Res>
           ? _value.pinpointSpotNum
           : pinpointSpotNum // ignore: cast_nullable_to_non_nullable
               as int,
+      pinpointMapBoundsDisplay: null == pinpointMapBoundsDisplay
+          ? _value.pinpointMapBoundsDisplay
+          : pinpointMapBoundsDisplay // ignore: cast_nullable_to_non_nullable
+              as bool,
     ));
   }
 }
@@ -103,7 +114,10 @@ class __$$AppParamStateImplCopyWithImpl<$Res>
 /// @nodoc
 
 class _$AppParamStateImpl implements _AppParamState {
-  const _$AppParamStateImpl({this.mapHide = true, this.pinpointSpotNum = 0});
+  const _$AppParamStateImpl(
+      {this.mapHide = true,
+      this.pinpointSpotNum = 0,
+      this.pinpointMapBoundsDisplay = false});
 
   @override
   @JsonKey()
@@ -111,10 +125,13 @@ class _$AppParamStateImpl implements _AppParamState {
   @override
   @JsonKey()
   final int pinpointSpotNum;
+  @override
+  @JsonKey()
+  final bool pinpointMapBoundsDisplay;
 
   @override
   String toString() {
-    return 'AppParamState(mapHide: $mapHide, pinpointSpotNum: $pinpointSpotNum)';
+    return 'AppParamState(mapHide: $mapHide, pinpointSpotNum: $pinpointSpotNum, pinpointMapBoundsDisplay: $pinpointMapBoundsDisplay)';
   }
 
   @override
@@ -124,11 +141,15 @@ class _$AppParamStateImpl implements _AppParamState {
             other is _$AppParamStateImpl &&
             (identical(other.mapHide, mapHide) || other.mapHide == mapHide) &&
             (identical(other.pinpointSpotNum, pinpointSpotNum) ||
-                other.pinpointSpotNum == pinpointSpotNum));
+                other.pinpointSpotNum == pinpointSpotNum) &&
+            (identical(
+                    other.pinpointMapBoundsDisplay, pinpointMapBoundsDisplay) ||
+                other.pinpointMapBoundsDisplay == pinpointMapBoundsDisplay));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, mapHide, pinpointSpotNum);
+  int get hashCode => Object.hash(
+      runtimeType, mapHide, pinpointSpotNum, pinpointMapBoundsDisplay);
 
   @JsonKey(ignore: true)
   @override
@@ -139,12 +160,16 @@ class _$AppParamStateImpl implements _AppParamState {
 
 abstract class _AppParamState implements AppParamState {
   const factory _AppParamState(
-      {final bool mapHide, final int pinpointSpotNum}) = _$AppParamStateImpl;
+      {final bool mapHide,
+      final int pinpointSpotNum,
+      final bool pinpointMapBoundsDisplay}) = _$AppParamStateImpl;
 
   @override
   bool get mapHide;
   @override
   int get pinpointSpotNum;
+  @override
+  bool get pinpointMapBoundsDisplay;
   @override
   @JsonKey(ignore: true)
   _$$AppParamStateImplCopyWith<_$AppParamStateImpl> get copyWith =>

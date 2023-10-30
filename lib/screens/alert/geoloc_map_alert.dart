@@ -98,6 +98,8 @@ class GeolocMapAlert extends ConsumerWidget {
 
                     await ref.read(appParamProvider.notifier).setPinpointSpotNum(value: 0);
 
+                    await ref.read(appParamProvider.notifier).setPinpointMapBoundsDisplay(value: false);
+
                     await GeolocDialog(
                       context: context,
                       widget: GeolocPinpointMapAlert(geolocList: uniqueTimeGeolocList, distanceMap: distanceMap),

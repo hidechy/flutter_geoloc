@@ -15,6 +15,10 @@ class AppParamNotifier extends StateNotifier<AppParamState> {
 
   ///
   Future<void> setPinpointSpotNum({required int value}) async => state = state.copyWith(pinpointSpotNum: value);
+
+  ///
+  Future<void> setPinpointMapBoundsDisplay({required bool value}) async =>
+      state = state.copyWith(pinpointMapBoundsDisplay: value);
 }
 
 ////////////////////////////////////////////////

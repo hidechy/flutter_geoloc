@@ -1,6 +1,7 @@
 // ignore_for_file: must_be_immutable, depend_on_referenced_packages, use_build_context_synchronously
 
 import 'dart:async';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -33,6 +34,8 @@ class GeolocPinpointMapAlert extends ConsumerWidget {
 
   Set<Polyline> polylineSet = {};
 
+  LatLngBounds pinpointMapBounds = LatLngBounds(southwest: const LatLng(0, 0), northeast: const LatLng(0, 0));
+
   late WidgetRef _ref;
 
   ///
@@ -43,6 +46,8 @@ class GeolocPinpointMapAlert extends ConsumerWidget {
     geolocListNum = geolocList.length;
 
     setMapParam();
+
+    makeBounds();
 
     final mapPinpointState = ref.watch(mapPinpointProvider);
 
@@ -64,25 +69,23 @@ class GeolocPinpointMapAlert extends ConsumerWidget {
     final addressComponentsNameList = ref.watch(reverseGeoProvider.select((value) => value.addressComponentsNameList));
 
     ///
-    final radiusNumbers = <int>[];
+    final zoomNumbers = <int>[];
     for (var i = 12; i <= 19; i++) {
-      radiusNumbers.add(i);
+      zoomNumbers.add(i);
     }
 
     ///
-    final radiusDropDown = DropdownButton(
+    final zoomDropDown = DropdownButton(
       dropdownColor: Colors.pinkAccent.withOpacity(0.1),
       iconEnabledColor: Colors.white,
-      items: radiusNumbers.map((e) {
+      items: zoomNumbers.map((e) {
         return DropdownMenuItem(
           value: e,
           child: Text(e.toString(), style: const TextStyle(fontSize: 12)),
         );
       }).toList(),
       value: mapPinpointState.pinpointMapZoom,
-      onChanged: (value) async {
-        await _ref.watch(mapPinpointProvider.notifier).setPinpointMapZoom(zoom: value!);
-      },
+      onChanged: (value) async => _ref.watch(mapPinpointProvider.notifier).setPinpointMapZoom(zoom: value!),
     );
 
     final distance = (distanceMap['${mapPinpointState.pinpointDate} ${mapPinpointState.pinpointTime}'] != null)
@@ -90,6 +93,8 @@ class GeolocPinpointMapAlert extends ConsumerWidget {
         : '';
 
     final pinpointSpotNum = ref.watch(appParamProvider.select((value) => value.pinpointSpotNum));
+
+    final pinpointMapBoundsDisplay = ref.watch(appParamProvider.select((value) => value.pinpointMapBoundsDisplay));
 
     return Scaffold(
       backgroundColor: Colors.transparent,
@@ -125,6 +130,18 @@ class GeolocPinpointMapAlert extends ConsumerWidget {
                                 const Text(' / '),
                                 Text(geolocListNum.toString()),
                               ],
+                            ),
+                            Switch(
+                              value: pinpointMapBoundsDisplay,
+                              onChanged: (value) {
+                                ref.read(appParamProvider.notifier).setPinpointMapBoundsDisplay(value: value);
+
+                                if (value) {
+                                  _displayPinpointMapBounds();
+                                } else {
+                                  tapListTime(geoloc: geolocList[pinpointSpotNum]);
+                                }
+                              },
                             ),
                             Row(
                               children: [
@@ -209,7 +226,7 @@ class GeolocPinpointMapAlert extends ConsumerWidget {
                                             ),
                                           ),
                                           const SizedBox(width: 20),
-                                          radiusDropDown,
+                                          zoomDropDown,
                                         ],
                                       ),
                                       Container(
@@ -245,6 +262,30 @@ class GeolocPinpointMapAlert extends ConsumerWidget {
         ),
       ),
     );
+  }
+
+  ///
+  void makeBounds() {
+    final latList = <double>[];
+    final lngList = <double>[];
+
+    geolocList.forEach((element) {
+      latList.add(element.latitude.toDouble());
+      lngList.add(element.longitude.toDouble());
+    });
+
+    final minLat = latList.reduce(min);
+    final maxLat = latList.reduce(max);
+    final minLng = lngList.reduce(min);
+    final maxLng = lngList.reduce(max);
+
+    pinpointMapBounds = LatLngBounds(northeast: LatLng(maxLat, maxLng), southwest: LatLng(minLat, minLng));
+  }
+
+  ///
+  Future<void> _displayPinpointMapBounds() async {
+    final googleMap = await mapController.future;
+    await googleMap.animateCamera(CameraUpdate.newLatLngBounds(pinpointMapBounds, 50));
   }
 
   ///
@@ -307,7 +348,14 @@ class GeolocPinpointMapAlert extends ConsumerWidget {
 
     await _ref.read(appParamProvider.notifier).setPinpointSpotNum(value: pos);
 
-    await tapListTime(geoloc: geolocList[pos]);
+    //--------------------//
+    final pinpointMapBoundsDisplay = _ref.watch(appParamProvider.select((value) => value.pinpointMapBoundsDisplay));
+
+    if (pinpointMapBoundsDisplay == false) {
+      await tapListTime(geoloc: geolocList[pos]);
+    }
+
+    //--------------------//
   }
 
   ///

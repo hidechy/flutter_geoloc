@@ -1,9 +1,9 @@
 // ignore_for_file: must_be_immutable, cascade_invocations
 
 import 'package:flutter/material.dart';
-import 'package:geoloc/extensions/extensions.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../../extensions/extensions.dart';
 import '../../../models/geoloc.dart';
 import '../../../view_model/geoloc_viewmodel.dart';
 import '../geoloc_dialog.dart';
@@ -42,22 +42,25 @@ class GeolocDisplayPage extends ConsumerWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(date.yyyymmdd),
-                  GestureDetector(
-                    onTap: () {
-                      GeolocDialog(
-                        context: context,
-                        widget: GeolocMapAlert(geolocList: geolocList),
-                      );
-                    },
-                    child: const Icon(Icons.map),
+                  Row(
+                    children: [
+                      Text(date.yyyymmdd),
+                      const SizedBox(width: 20),
+                      GestureDetector(
+                        onTap: () {
+                          GeolocDialog(
+                            context: context,
+                            widget: GeolocMapAlert(geolocList: geolocList),
+                          );
+                        },
+                        child: const Icon(Icons.map, color: Colors.greenAccent),
+                      ),
+                    ],
                   ),
+                  Text(_getListNum()),
                 ],
               ),
-              Divider(
-                color: Colors.white.withOpacity(0.5),
-                thickness: 2,
-              ),
+              Divider(color: Colors.white.withOpacity(0.5), thickness: 2),
               Expanded(child: displayGeoloc()),
             ],
           ),
@@ -79,13 +82,7 @@ class GeolocDisplayPage extends ConsumerWidget {
         Container(
           padding: const EdgeInsets.all(10),
           margin: const EdgeInsets.only(bottom: 10),
-          decoration: BoxDecoration(
-            border: Border(
-              bottom: BorderSide(
-                color: Colors.white.withOpacity(0.3),
-              ),
-            ),
-          ),
+          decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.white.withOpacity(0.3)))),
           child: DefaultTextStyle(
             style: const TextStyle(fontSize: 12),
             child: Row(
@@ -100,8 +97,12 @@ class GeolocDisplayPage extends ConsumerWidget {
       );
     });
 
-    return SingleChildScrollView(
-      child: Column(children: list),
-    );
+    return SingleChildScrollView(child: Column(children: list));
+  }
+
+  ///
+  String _getListNum() {
+    final geolocState = _ref.watch(geolocProvider(date));
+    return geolocState.length.toString();
   }
 }
