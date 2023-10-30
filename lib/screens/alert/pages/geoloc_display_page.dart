@@ -5,6 +5,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../extensions/extensions.dart';
 import '../../../models/geoloc.dart';
+import '../../../utility/utility.dart';
 import '../../../view_model/geoloc_viewmodel.dart';
 import '../geoloc_dialog.dart';
 import '../geoloc_map_alert.dart';
@@ -15,6 +16,8 @@ class GeolocDisplayPage extends ConsumerWidget {
   final DateTime date;
 
   List<Geoloc> geolocList = [];
+
+  Utility utility = Utility();
 
   late WidgetRef _ref;
 
@@ -77,25 +80,49 @@ class GeolocDisplayPage extends ConsumerWidget {
 
     geolocList = geolocState;
 
-    geolocState.forEach((element) {
+    for (var i = 0; i < geolocState.length; i++) {
+      var distance = '0.00';
+
+      if (i < geolocState.length - 1) {
+        try {
+          distance = utility.calcDistance(
+            originLat: geolocState[i + 1].latitude.toDouble(),
+            originLng: geolocState[i + 1].longitude.toDouble(),
+            destLat: geolocState[i].latitude.toDouble(),
+            destLng: geolocState[i].longitude.toDouble(),
+          );
+          // ignore: avoid_catches_without_on_clauses
+        } catch (e) {
+          distance = '0.00';
+        }
+      }
+
       list.add(
         Container(
           padding: const EdgeInsets.all(10),
           margin: const EdgeInsets.only(bottom: 10),
           decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.white.withOpacity(0.3)))),
           child: DefaultTextStyle(
-            style: const TextStyle(fontSize: 12),
+            style: const TextStyle(fontSize: 10),
             child: Row(
               children: [
-                Expanded(child: Text(element.time)),
-                Expanded(child: Text(element.latitude)),
-                Expanded(child: Text(element.longitude)),
+                Expanded(child: Text(geolocState[i].time)),
+                Expanded(child: Text(geolocState[i].latitude)),
+                Expanded(child: Text(geolocState[i].longitude)),
+                Container(
+                  width: 40,
+                  alignment: Alignment.topRight,
+                  child: Text(
+                    distance,
+                    style: TextStyle(color: (distance == '0.00') ? Colors.grey.withOpacity(0.6) : Colors.white),
+                  ),
+                ),
               ],
             ),
           ),
         ),
       );
-    });
+    }
 
     return SingleChildScrollView(child: Column(children: list));
   }
