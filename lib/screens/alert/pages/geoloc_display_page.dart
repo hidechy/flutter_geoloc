@@ -102,23 +102,24 @@ class GeolocDisplayPage extends ConsumerWidget {
           padding: const EdgeInsets.all(10),
           margin: const EdgeInsets.only(bottom: 10),
           decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.white.withOpacity(0.3)))),
-          child: DefaultTextStyle(
-            style: const TextStyle(fontSize: 10),
-            child: Row(
-              children: [
-                Expanded(child: Text(geolocState[i].time)),
-                Expanded(child: Text(geolocState[i].latitude)),
-                Expanded(child: Text(geolocState[i].longitude)),
-                Container(
-                  width: 40,
-                  alignment: Alignment.topRight,
-                  child: Text(
-                    distance,
-                    style: TextStyle(color: (distance == '0.00') ? Colors.grey.withOpacity(0.6) : Colors.white),
-                  ),
+          child: Row(
+            children: [
+              Expanded(child: Text(geolocState[i].time)),
+              Expanded(
+                child: Text(geolocState[i].latitude),
+              ),
+              Expanded(
+                child: Text(geolocState[i].longitude),
+              ),
+              Container(
+                width: 40,
+                alignment: Alignment.topRight,
+                child: Text(
+                  distance,
+                  style: TextStyle(color: (distance == '0.00') ? Colors.grey.withOpacity(0.6) : Colors.white),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       );
