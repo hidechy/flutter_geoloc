@@ -36,9 +36,11 @@ class GeolocNotifier extends StateNotifier<List<Geoloc>> {
       }
 
       state = list;
-    }).catchError((error, _) {
-      utility.showError('予期せぬエラーが発生しました');
     });
+
+    // .catchError((error, _) {
+    //   utility.showError('予期せぬエラーが発生しました');
+    // });
   }
 }
 

@@ -19,6 +19,7 @@ class Geoloc {
     required this.time,
     required this.latitude,
     required this.longitude,
+    required this.similarPercent,
   });
 
   factory Geoloc.fromJson(Map<String, dynamic> json) => Geoloc(
@@ -26,12 +27,14 @@ class Geoloc {
         time: json['time'].toString(),
         latitude: json['latitude'].toString(),
         longitude: json['longitude'].toString(),
+        similarPercent: json['similarPercent'].toString(),
       );
 
   DateTime date;
   String time;
   String latitude;
   String longitude;
+  String similarPercent;
 
   Map<String, dynamic> toJson() => {
         'date':
@@ -39,5 +42,6 @@ class Geoloc {
         'time': time,
         'latitude': latitude,
         'longitude': longitude,
+        'similarPercent': similarPercent,
       };
 }
