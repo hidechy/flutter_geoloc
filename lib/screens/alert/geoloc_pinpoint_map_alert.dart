@@ -335,6 +335,17 @@ class GeolocPinpointMapAlert extends ConsumerWidget {
 
   ///
   Future<void> setCurrentSpot({required int pos}) async {
+    if (pos > 0) {
+      final poly = <LatLng>[
+        LatLng(geolocList[pos - 1].latitude.toDouble(), geolocList[pos - 1].longitude.toDouble()),
+        LatLng(geolocList[pos].latitude.toDouble(), geolocList[pos].longitude.toDouble()),
+      ];
+
+      polylineSet.add(
+        Polyline(polylineId: const PolylineId('overview_polyline2'), color: Colors.blueAccent, width: 5, points: poly),
+      );
+    }
+
     await _ref.watch(mapPinpointProvider.notifier).setPinpointLatLng(
           date: geolocList[pos].date.yyyymmdd,
           time: geolocList[pos].time,
