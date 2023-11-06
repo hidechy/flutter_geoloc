@@ -295,7 +295,12 @@ class GeolocPinpointMapAlert extends ConsumerWidget {
     geolocList.forEach((element) => poly.add(LatLng(element.latitude.toDouble(), element.longitude.toDouble())));
 
     polylineSet.add(
-      Polyline(polylineId: const PolylineId('overview_polyline'), color: Colors.redAccent, width: 5, points: poly),
+      Polyline(
+        polylineId: const PolylineId('overview_polyline'),
+        color: Colors.redAccent,
+        width: 5,
+        points: poly,
+      ),
     );
   }
 
@@ -335,15 +340,26 @@ class GeolocPinpointMapAlert extends ConsumerWidget {
 
   ///
   Future<void> setCurrentSpot({required int pos}) async {
-    if (pos > 0) {
-      final poly = <LatLng>[
-        LatLng(geolocList[pos - 1].latitude.toDouble(), geolocList[pos - 1].longitude.toDouble()),
-        LatLng(geolocList[pos].latitude.toDouble(), geolocList[pos].longitude.toDouble()),
-      ];
+    polylineSet.removeWhere((element) => element.polylineId == const PolylineId('overview_polyline2'));
 
-      polylineSet.add(
-        Polyline(polylineId: const PolylineId('overview_polyline2'), color: Colors.blueAccent, width: 5, points: poly),
-      );
+    final pinpointSpotNum = _ref.watch(appParamProvider.select((value) => value.pinpointSpotNum));
+
+    if (pos > 0) {
+      if (pos > pinpointSpotNum) {
+        final poly = <LatLng>[
+          LatLng(geolocList[pos - 1].latitude.toDouble(), geolocList[pos - 1].longitude.toDouble()),
+          LatLng(geolocList[pos].latitude.toDouble(), geolocList[pos].longitude.toDouble()),
+        ];
+
+        polylineSet.add(
+          Polyline(
+            polylineId: const PolylineId('overview_polyline2'),
+            color: Colors.blueAccent,
+            width: 5,
+            points: poly,
+          ),
+        );
+      }
     }
 
     await _ref.watch(mapPinpointProvider.notifier).setPinpointLatLng(
